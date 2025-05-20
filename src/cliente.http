@@ -1,0 +1,43 @@
+### obtener todos los characters
+GET http://localhost:3000/api/cliente
+
+
+### obtener un character
+GET http://localhost:3000/api/cliente/a02b91bc-3769-4221-beb1-d7a3aeba7dad
+
+
+### crear un nuevo character
+POST http://localhost:3000/api/cliente
+Content-Type: application/json
+
+{
+  "name": "Ignacio",
+  "apeellido": "Corsallini",
+  "usuario": "ignacioCorsallini",
+  "contraseña":"12345",
+  "zona": "zona2"
+}
+
+### modificar un character (PUT - recurso completo e idempotente)
+PUT http://localhost:3000/api/cliente/a02b91bc-3769-4221-beb1-d7a3aeba7dad
+Content-Type: application/json
+
+{
+  "name": "Luciana",
+  "apellido": "Echeveste",
+  "usuario": "lucianaEcheveste",
+  "contraseña":"54321",
+  "zona": "zona3"
+} 
+
+### modificar un character (PATCH - recurso parcial)
+PATCH http://localhost:3000/api/cliente/a02b91bc-3769-4221-beb1-d7a3aeba7dad
+Content-Type: application/json
+
+{
+  "contraseña":"123",
+  "zona": "zona4"
+}
+
+### borrar un character
+DELETE http://localhost:3000/api/cliente/a02b91bc-3769-4221-beb1-d7a3aeba7dad
