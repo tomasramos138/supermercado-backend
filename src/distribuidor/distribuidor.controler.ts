@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express'
-import { DistribuidorRepository} from './distribuidor.repository.js' //asignaZona
+import { DistribuidorRepository} from './distribuidor.reository.js' //asignaZona
 import { Distribuidor } from './distribuidor.entity.js'
 
 const repository = new DistribuidorRepository()
