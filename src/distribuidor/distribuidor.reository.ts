@@ -2,41 +2,37 @@ import { Distribuidor } from "./distribuidor.entity.js"
 import { Repository } from "../shared/interfaz/respository.js"
 function asignaZona(){}//hacer
 //export { asignaZona }
-const characters = [
-  new Distribuidor(
-    
-  ),
-]
+const distribuidores: Distribuidor[]= []
 
 export class DistribuidorRepository implements Repository<Distribuidor> {
   public findAll(): Distribuidor[] | undefined {
-    return characters
+    return distribuidores
   }
 
   public findOne(item: { id: string }): Distribuidor | undefined {
-    return characters.find((character) => character.id === item.id)
+    return distribuidores.find((distribuidor) => distribuidor.id === item.id)
   }
 
   public add(item: Distribuidor): Distribuidor | undefined {
-    characters.push(item)
+    distribuidores.push(item)
     return item
   }
 
   public update(item: Distribuidor): Distribuidor | undefined {
-    const characterIdx = characters.findIndex((character) => character.id === item.id)
+    const distribuidorIdx = distribuidores.findIndex((distribuidor) => distribuidor.id === item.id)
 
-    if (characterIdx !== -1) {
-      characters[characterIdx] = { ...characters[characterIdx], ...item }
+    if (distribuidorIdx !== -1) {
+      distribuidores[distribuidorIdx] = { ...distribuidores[distribuidorIdx], ...item }
     }
-    return characters[characterIdx]
+    return distribuidores[distribuidorIdx]
   }
 
   public delete(item: { id: string }): Distribuidor | undefined {
-    const characterIdx = characters.findIndex((character) => character.id === item.id)
+    const distribuidorIdx = distribuidores.findIndex((distribuidor) => distribuidor.id === item.id)
 
-    if (characterIdx !== -1) {
-      const deletedCharacters = characters[characterIdx]
-      characters.splice(characterIdx, 1)
+    if (distribuidorIdx !== -1) {
+      const deletedCharacters = distribuidores[distribuidorIdx]
+      distribuidores.splice(distribuidorIdx, 1)
       return deletedCharacters
     }
   }

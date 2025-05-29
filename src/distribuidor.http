@@ -1,0 +1,43 @@
+### obtener todos los distribuidores
+GET http://localhost:3000/api/distribuidor
+
+
+### obtener un distribuidor
+GET http://localhost:3000/api/distribuidor/a02b91bc-3769-4221-beb1-d7a3aeba7dad
+
+
+### crear un nuevo distribuidor
+POST http://localhost:3000/api/distribuidor
+Content-Type: application/json
+
+{
+  "name": "Ignacio",
+  "apellido": "Corsallini",
+  "valorEntrega":"12345",
+  "venta": "No se que va en este arreglo",
+  "zona": "Falta conectar la zona"
+}
+
+### modificar un distribuidor (PUT - recurso completo e idempotente)
+PUT http://localhost:3000/api/distribuidor/a02b91bc-3769-4221-beb1-d7a3aeba7dad
+Content-Type: application/json
+
+{
+  "name": "juancito",
+  "apeellido": "Corsallini",
+  "usuario": "ignacioCorsallini",
+  "valorEntrega":"12345",
+  "venta": "No se que va en este arreglo",
+  "zona": "Falta conectar la zona"
+} 
+
+### modificar un distribuidor (PATCH - recurso parcial)
+PATCH http://localhost:3000/api/distribuidor/0675df11-5a64-4b7b-86ad-4cc8b92830e8
+Content-Type: application/json
+
+{
+ "valorEntrega": "67890"
+}
+
+### borrar un distribuidor
+DELETE http://localhost:3000/api/distribuidor/a02b91bc-3769-4221-beb1-d7a3aeba7dad

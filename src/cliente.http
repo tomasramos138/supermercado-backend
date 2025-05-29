@@ -1,12 +1,12 @@
-### obtener todos los characters
+### obtener todos los clientes
 GET http://localhost:3000/api/cliente
 
 
-### obtener un character
+### obtener un cliente
 GET http://localhost:3000/api/cliente/a02b91bc-3769-4221-beb1-d7a3aeba7dad
 
 
-### crear un nuevo character
+### crear un nuevo cliente
 POST http://localhost:3000/api/cliente
 Content-Type: application/json
 
@@ -18,7 +18,7 @@ Content-Type: application/json
   "zona": "zona2"
 }
 
-### modificar un character (PUT - recurso completo e idempotente)
+### modificar un cliente (PUT - recurso completo e idempotente)
 PUT http://localhost:3000/api/cliente/a02b91bc-3769-4221-beb1-d7a3aeba7dad
 Content-Type: application/json
 
@@ -30,7 +30,7 @@ Content-Type: application/json
   "zona": "zona3"
 } 
 
-### modificar un character (PATCH - recurso parcial)
+### modificar un cliente (PATCH - recurso parcial)
 PATCH http://localhost:3000/api/cliente/a02b91bc-3769-4221-beb1-d7a3aeba7dad
 Content-Type: application/json
 
@@ -39,5 +39,5 @@ Content-Type: application/json
   "zona": "zona4"
 }
 
-### borrar un character
+### borrar un cliente
 DELETE http://localhost:3000/api/cliente/a02b91bc-3769-4221-beb1-d7a3aeba7dad

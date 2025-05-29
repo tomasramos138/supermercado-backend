@@ -1,13 +1,15 @@
 import express from 'express'
 import cors from 'cors'
 import { clienteRouter } from './src/cliente/cliente.routes.js'
-
+import { productoRouter } from './src/producto/producto.rout.js'
+import { distribuidorRouter } from './src/distribuidor/distribuidor.rout.js'
 const app = express()
 app.use(express.json())
 app.use(cors())
 
 app.use('/api/cliente', clienteRouter)
-
+app.use('/api/producto', productoRouter)
+app.use('/api/distribuidor', distribuidorRouter)
 app.use((_, res) => {
   return res.status(404).send({ message: 'Resource not found' })
 })

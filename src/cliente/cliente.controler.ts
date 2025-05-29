@@ -45,8 +45,8 @@ async function add(req: Request, res: Response) {
     input.zona,
   )
 
-  const character = await repository.add(clienteInput)
-  return res.status(201).send({ message: 'Cliente created', data: character })
+  const cliente = await repository.add(clienteInput)
+  return res.status(201).send({ message: 'Cliente created', data: cliente })
 }
 
 async function update(req: Request, res: Response) {

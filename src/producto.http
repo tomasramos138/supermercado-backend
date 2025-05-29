@@ -1,0 +1,42 @@
+### obtener todos los Productos
+GET http://localhost:3000/api/producto
+
+
+### obtener un Productos
+GET http://localhost:3000/api/producto/a02b91bc-3769-4221-beb1-d7a3aeba7dad
+
+
+### crear un nuevo Productos
+POST http://localhost:3000/api/producto
+Content-Type: application/json
+
+{
+  "name": "Cafe",
+  "descripcion": "cafe molido",
+  "precio": 200,
+  "imagen":"...",
+  "categoria": "Falta conectar la categoria"
+}
+
+### modificar un Productos (PUT - recurso completo e idempotente)
+PUT http://localhost:3000/api/producto/83e10d7d-8f58-402a-9054-0de8e0f384fb
+Content-Type: application/json
+
+{
+  "name": "Te",
+  "descripcion": "Te verde",
+  "precio": 100,
+  "imagen":"...",
+  "categoria": "Falta conectar la categoria"
+} 
+
+### modificar un Productos (PATCH - recurso parcial)
+PATCH http://localhost:3000/api/producto/83e10d7d-8f58-402a-9054-0de8e0f384fb
+Content-Type: application/json
+
+{
+"precio": 150
+}
+
+### borrar un Productos
+DELETE http://localhost:3000/api/producto/a02b91bc-3769-4221-beb1-d7a3aeba7dad

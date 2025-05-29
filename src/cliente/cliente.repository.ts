@@ -2,7 +2,7 @@ import { Cliente } from "./cliente.entity.js"
 import { Repository } from "../shared/interfaz/respository.js"
 function asignaZona(){}//hacer
 //export { asignaZona }
-const characters = [
+const clientes = [
   new Cliente(
     'Tomas',
     'Ramos',
@@ -15,34 +15,34 @@ const characters = [
 
 export class ClienteRepository implements Repository<Cliente> {
   public findAll(): Cliente[] | undefined {
-    return characters
+    return clientes
   }
 
   public findOne(item: { id: string }): Cliente | undefined {
-    return characters.find((character) => character.id === item.id)
+    return clientes.find((cliente) => cliente.id === item.id)
   }
 
   public add(item: Cliente): Cliente | undefined {
-    characters.push(item)
+    clientes.push(item)
     return item
   }
 
   public update(item: Cliente): Cliente | undefined {
-    const characterIdx = characters.findIndex((character) => character.id === item.id)
+    const clienteIdx = clientes.findIndex((cliente) => cliente.id === item.id)
 
-    if (characterIdx !== -1) {
-      characters[characterIdx] = { ...characters[characterIdx], ...item }
+    if (clienteIdx !== -1) {
+      clientes[clienteIdx] = { ...clientes[clienteIdx], ...item }
     }
-    return characters[characterIdx]
+    return clientes[clienteIdx]
   }
 
   public delete(item: { id: string }): Cliente | undefined {
-    const characterIdx = characters.findIndex((character) => character.id === item.id)
+    const clienteIdx = clientes.findIndex((cliente) => cliente.id === item.id)
 
-    if (characterIdx !== -1) {
-      const deletedCharacters = characters[characterIdx]
-      characters.splice(characterIdx, 1)
-      return deletedCharacters
+    if (clienteIdx !== -1) {
+      const deletedClientes = clientes[clienteIdx]
+      clientes.splice(clienteIdx, 1)
+      return deletedClientes
     }
   }
 }

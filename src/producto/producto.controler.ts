@@ -6,7 +6,7 @@ const repository = new ProductoRepository()
 
 function sanitizeProductoInput(req: Request, res: Response, next: NextFunction) {
   req.body.sanitizedInput = {
-    id: req.body.id
+    id: req.body.id,
     name: req.body.name,
     descripcion: req.body.descripcion,
     precio: req.body.precio,
@@ -47,8 +47,8 @@ async function add(req: Request, res: Response) {
     input.categoria,
   )
 
-  const character = await repository.add(productoInput)
-  return res.status(201).send({ message: 'Producto created', data: character })
+  const producto = await repository.add(productoInput)
+  return res.status(201).send({ message: 'Producto created', data: producto })
 }
 
 async function update(req: Request, res: Response) {

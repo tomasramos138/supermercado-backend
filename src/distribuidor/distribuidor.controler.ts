@@ -12,7 +12,6 @@ function sanitizeDistribuidorInput(req: Request, res: Response, next: NextFuncti
     valorEntrega: req.body.valorEntrega,
     ventas: req.body.ventas,
     zona: req.body.zona,
-
   }
 
   Object.keys(req.body.sanitizedInput).forEach((key) => {

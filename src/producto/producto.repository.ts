@@ -2,41 +2,38 @@ import { Producto } from "./producto.entity.js"
 import { Repository } from "../shared/interfaz/respository.js"
 function asignaZona(){}//hacer
 //export { asignaZona }
-const characters = [
-  new Producto(
-  ),
-]
+const productos: Producto[] = []
 
 export class ProductoRepository implements Repository<Producto> {
   public findAll(): Producto[] | undefined {
-    return characters
+    return productos
   }
 
   public findOne(item: { id: string }): Producto | undefined {
-    return characters.find((character) => character.id === item.id)
+    return productos.find((producto) => producto.id === item.id)
   }
 
   public add(item: Producto): Producto | undefined {
-    characters.push(item)
+    productos.push(item)
     return item
   }
 
   public update(item: Producto): Producto | undefined {
-    const characterIdx = characters.findIndex((character) => character.id === item.id)
+    const productoIdx = productos.findIndex((producto) => producto.id === item.id)
 
-    if (characterIdx !== -1) {
-      characters[characterIdx] = { ...characters[characterIdx], ...item }
+    if (productoIdx !== -1) {
+      productos[productoIdx] = { ...productos[productoIdx], ...item }
     }
-    return characters[characterIdx]
+    return productos[productoIdx]
   }
 
   public delete(item: { id: string }): Producto | undefined {
-    const characterIdx = characters.findIndex((character) => character.id === item.id)
+    const productoIdx = productos.findIndex((producto) => producto.id === item.id)
 
-    if (characterIdx !== -1) {
-      const deletedCharacters = characters[characterIdx]
-      characters.splice(characterIdx, 1)
-      return deletedCharacters
+    if (productoIdx !== -1) {
+      const deletedProductos = productos[productoIdx]
+      productos.splice(productoIdx, 1)
+      return deletedProductos
     }
   }
 }
