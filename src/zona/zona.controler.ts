@@ -6,9 +6,8 @@ const repository = new ZonaRepository()
 
 function sanitizeZonaInput(req: Request, res: Response, next: NextFunction) {
   req.body.sanitizedInput = {
-    id: req.body.id,
-    distribuidores: req.body.distribuidores,
-    clientes: req.body.clientes,
+    name:req.body.name,
+    descripcion: req.body.descripcion,
   }
 
   Object.keys(req.body.sanitizedInput).forEach((key) => {
@@ -36,13 +35,12 @@ async function add(req: Request, res: Response) {
   const input = req.body.sanitizedInput
 
   const zonaInput = new Zona(
-    input.cosPostal,
-    input.distribiudores,
-    input.clientes,
+  input.name,
+  input.descripcion,  
   )
 
-  const character = await repository.add(zonaInput)
-  return res.status(201).send({ message: 'Zona created', data: character })
+  const zona = await repository.add(zonaInput)
+  return res.status(201).send({ message: 'Zona created', data: zona })
 }
 
 async function update(req: Request, res: Response) {

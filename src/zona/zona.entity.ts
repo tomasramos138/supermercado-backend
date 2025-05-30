@@ -3,9 +3,9 @@ import{ Distribuidor } from '../distribuidor/distribuidor.entity';
 import crypto from 'node:crypto'
 export class Zona {
     constructor(
+      public name: string,
+      public descripcion: string,
       public id= crypto.randomUUID(),
-      public distribuidores: string, //Distribuidor,
-      public clientes: Cliente[],
     ) {}
   }
 

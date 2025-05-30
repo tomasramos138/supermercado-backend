@@ -1,6 +1,6 @@
 import { Categoria } from "./categoria.entity.js"
 import { Repository } from "../shared/interfaz/respository.js"                  
-import { Cliente } from "../cliente/cliente.entity.js"
+
 function asignaCategoria(){}//hacer
 //export { asignaCategoria }
 const categorias: Categoria[] = []

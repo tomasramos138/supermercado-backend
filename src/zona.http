@@ -1,0 +1,37 @@
+### obtener todos los Zonas
+GET http://localhost:3000/api/zona
+
+
+### obtener un zona
+GET http://localhost:3000/api/zona/98e8c50c-9751-40b9-a086-2da8351a0e8f
+
+### crear un nuevo zona
+POST http://localhost:3000/api/zona
+Content-Type: application/json
+
+{
+  "name": "Zona 1",
+  "descripcion": "centre oroño y el rio"
+}
+
+### modificar un zona (PUT - recurso completo e idempotente)
+PUT http://localhost:3000/api/zona/98e8c50c-9751-40b9-a086-2da8351a0e8f
+
+Content-Type: application/json
+
+{
+  "name": "Zona 2",
+  "descripcion": "cambio descripcion y zona",
+} 
+
+### modificar un zona (PATCH - recurso parcial)
+PATCH http://localhost:3000/api/zona/98e8c50c-9751-40b9-a086-2da8351a0e8f
+
+Content-Type: application/json
+
+{
+"descripcion": "cambio descripcion solo"
+}
+
+### borrar un zona
+DELETE http://localhost:3000/api/zona/a02b91bc-3769-4221-beb1-d7a3aeba7dad

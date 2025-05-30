@@ -3,8 +3,8 @@ import { sanitizeZonaInput, findAll, findOne, add, update, remove } from './zona
 
 export const ZonaRouter = Router()
 ZonaRouter.get('/', findAll)
-ZonaRouter.get('/:codPostal', findOne)
+ZonaRouter.get('/:id', findOne)
 ZonaRouter.post('/', sanitizeZonaInput, add)
-ZonaRouter.put('/:codPostal', sanitizeZonaInput, update)
-ZonaRouter.patch('/:codPostal', sanitizeZonaInput, update)
-ZonaRouter.delete('/:codPostal', remove)
+ZonaRouter.put('/:id', sanitizeZonaInput, update)
+ZonaRouter.patch('/:id', sanitizeZonaInput, update)
+ZonaRouter.delete('/:id', remove)

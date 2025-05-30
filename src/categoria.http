@@ -1,0 +1,34 @@
+### obtener todos los categorias
+GET http://localhost:3000/api/categoria
+
+### obtener un categoria
+GET http://localhost:3000/api/categoria/6a04e2bd-4482-467a-a452-6e3347b349c7
+
+### crear un nuevo categoria
+POST http://localhost:3000/api/categoria
+Content-Type: application/json
+
+{
+"name": "Categoria 1",
+"descripcion": "ygktuf"
+}
+
+### modificar un categoria (PUT - recurso completo e idempotente)
+PUT http://localhost:3000/api/categoria/6a04e2bd-4482-467a-a452-6e3347b349c7
+Content-Type: application/json
+
+{
+"nombre": "Categoria 1",
+"descripcion": "lllllllllllllllll"
+} 
+
+### modificar un categoria (PATCH - recurso parcial)
+PATCH http://localhost:3000/api/categoria/6a04e2bd-4482-467a-a452-6e3347b349c7
+Content-Type: application/json
+
+{
+  "descripcion": "PPPPPPPPPPPPPPPPPPP"
+}
+
+### borrar un categoria
+DELETE http://localhost:3000/api/categoria/b4fc7cf3-db99-4186-9404-099cba206f56

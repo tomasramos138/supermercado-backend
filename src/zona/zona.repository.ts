@@ -1,6 +1,5 @@
 import { Zona } from "./zona.entity.js"
 import { Repository } from "../shared/interfaz/respository.js"                  
-import { Cliente } from "../cliente/cliente.entity.js"
 function asignaZona(){}//hacer
 //export { asignaZona }
 const zonas: Zona[] = []

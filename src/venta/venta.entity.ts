@@ -1,11 +1,14 @@
+import { RandomUUIDOptions } from 'node:crypto';
 import{ Cliente } from '../cliente/cliente.entity';
 import{ Distribuidor } from '../distribuidor/distribuidor.entity';
 import{ ItemVenta } from '../item.venta/item.entity';
+import crypto from 'node:crypto'
 export class Venta {
     constructor(
       public fecha: Date,
       public cliente: Cliente,
       public distribuidor: Distribuidor,
       public itemVenta: ItemVenta[],
+      public id=crypto.randomUUID(),
     ) {}
   }
