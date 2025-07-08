@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express'
+/*import { Request, Response, NextFunction } from 'express'
 import { DistribuidorRepository} from './distribuidor.reository.js' //asignaZona
 import { Distribuidor } from './distribuidor.entity.js'
 
@@ -74,3 +74,5 @@ async function remove(req: Request, res: Response) {
 }
 
 export { sanitizeDistribuidorInput, findAll, findOne, add, update, remove }
+
+*/

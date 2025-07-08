@@ -1,4 +1,4 @@
-import { Router } from 'express'
+/*import { Router } from 'express'
 import { sanitizeDistribuidorInput, findAll, findOne, add, update, remove } from './distribuidor.controler.js'
 
 export const distribuidorRouter = Router()
@@ -8,3 +8,4 @@ distribuidorRouter.post('/', sanitizeDistribuidorInput, add)
 distribuidorRouter.put('/:id', sanitizeDistribuidorInput, update)
 distribuidorRouter.patch('/:id', sanitizeDistribuidorInput, update)
 distribuidorRouter.delete('/:id', remove)
+*/

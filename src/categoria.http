@@ -2,33 +2,33 @@
 GET http://localhost:3000/api/categoria
 
 ### obtener un categoria
-GET http://localhost:3000/api/categoria/6a04e2bd-4482-467a-a452-6e3347b349c7
+GET http://localhost:3000/api/categoria/1
 
 ### crear un nuevo categoria
 POST http://localhost:3000/api/categoria
 Content-Type: application/json
 
 {
-"name": "Categoria 1",
-"descripcion": "ygktuf"
+"name": "Lacteos",
+"description": "leche, queso, manteca"
 }
 
 ### modificar un categoria (PUT - recurso completo e idempotente)
-PUT http://localhost:3000/api/categoria/6a04e2bd-4482-467a-a452-6e3347b349c7
+PUT http://localhost:3000/api/categoria/7
 Content-Type: application/json
 
 {
-"nombre": "Categoria 1",
-"descripcion": "lllllllllllllllll"
+"name": "Cariniceria",
+"descripcion": "carnes y fiambres"
 } 
 
 ### modificar un categoria (PATCH - recurso parcial)
-PATCH http://localhost:3000/api/categoria/6a04e2bd-4482-467a-a452-6e3347b349c7
+PATCH http://localhost:3000/api/categoria/7
 Content-Type: application/json
 
 {
-  "descripcion": "PPPPPPPPPPPPPPPPPPP"
+  "descripcion": "carnes y achuras"
 }
 
 ### borrar un categoria
-DELETE http://localhost:3000/api/categoria/b4fc7cf3-db99-4186-9404-099cba206f56
+DELETE http://localhost:3000/api/categoria/7

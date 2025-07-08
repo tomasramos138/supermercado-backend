@@ -1,5 +1,5 @@
-import{Venta} from '../venta/venta.entity';
-import { Zona } from '../zona/zona.entity';
+//import{Venta} from '../venta/venta.entity';
+//import { Zona } from '../zona/zona.entity';
 import crypto from 'node:crypto';
 export class Distribuidor {
     constructor(
@@ -7,7 +7,9 @@ export class Distribuidor {
       public name: string,
       public apellido: string,
       public valorEntrega:number,
-      public ventas:Venta[],
-      public zona:Zona,
+      public ventas:string,//Venta[]
+      public zona:string,//Zona
     ) {}
   }
+
+  

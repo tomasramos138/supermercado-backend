@@ -1,4 +1,4 @@
-import { Distribuidor } from "./distribuidor.entity.js"
+/*import { Distribuidor } from "./distribuidor.entity.js"
 import { Repository } from "../shared/interfaz/respository.js"
 function asignaZona(){}//hacer
 //export { asignaZona }
@@ -37,3 +37,5 @@ export class DistribuidorRepository implements Repository<Distribuidor> {
     }
   }
 }
+
+*/

@@ -11,11 +11,11 @@ POST http://localhost:3000/api/producto
 Content-Type: application/json
 
 {
-  "name": "Cafe",
-  "descripcion": "cafe molido",
-  "precio": 200,
+  "name": "vacio",
+  "descripcion": "carne",
+  "precio": 10000,
   "imagen":"...",
-  "categoria": "Falta conectar la categoria"
+  "categoria": 2
 }
 
 ### modificar un Productos (PUT - recurso completo e idempotente)

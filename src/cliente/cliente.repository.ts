@@ -1,4 +1,4 @@
-import { Cliente } from "./cliente.entity.js"
+/*import { Cliente } from "./cliente.entity.js"
 import { Repository } from "../shared/interfaz/respository.js"
 function asignaZona(){}//hacer
 //export { asignaZona }
@@ -46,3 +46,5 @@ export class ClienteRepository implements Repository<Cliente> {
     }
   }
 }
+
+*/

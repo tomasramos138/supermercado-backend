@@ -1,68 +1,66 @@
-import { Request, Response, NextFunction } from 'express'
-import { CategoriaRepository} from './categoria.repository.js' //asignacategoria
+import { Request, Response } from 'express'
+import { orm } from '../shared/orm.js'
 import { Categoria } from './categoria.entity.js'
+import { t } from '@mikro-orm/core'
 
-const repository = new CategoriaRepository()
-
-function sanitizeCategoriaInput(req: Request, res: Response, next: NextFunction) {
-  req.body.sanitizedInput = {
-    name: req.body.name,
-    descripcion: req.body.descripcion,
-  }
-
-  Object.keys(req.body.sanitizedInput).forEach((key) => {
-    if (req.body.sanitizedInput[key] === undefined) {
-      delete req.body.sanitizedInput[key]
-    }
-  })
-  next()
-}
+const em = orm.em
 
 async function findAll(req: Request, res: Response) {
-  res.json({ data: await repository.findAll() })
+    try {
+    const categorias = await em.find(Categoria, {})
+    res
+      .status(200)
+      .json({ message: 'found all categorias', data: categorias })
+  } catch (error: any) {
+    res.status(500).json({ message: error.message })
+  }
 }
 
 async function findOne(req: Request, res: Response) {
-  const id = req.params.id
-  const categoria = await repository.findOne({ id })
-  if (!categoria) {
-    return res.status(404).send({ message: 'categoria not found' })
+  try {
+    const id = Number.parseInt(req.params.id)
+    const categorias = await em.findOneOrFail(Categoria, { id })
+    res
+      .status(200)
+      .json({ message: 'found categorias de productos', data: categorias })
+  } catch (error: any) {
+    res.status(500).json({ message: error.message })
   }
-  res.json({ data: categoria })
 }
 
 async function add(req: Request, res: Response) {
-  const input = req.body.sanitizedInput
-
-  const categoriaInput = new Categoria(
-    input.name,
-    input.descripcion,
-  )
-
-  const character = await repository.add(categoriaInput)
-  return res.status(201).send({ message: 'categoria created', data: character })
+  try {
+    const categorias = em.create(Categoria, req.body)
+    await em.flush()
+    res
+      .status(201)
+      .json({ message: 'Categoria created', data: categorias })
+  } catch (error: any) {
+    res.status(500).json({ message: error.message })
+  }
 }
 
 async function update(req: Request, res: Response) {
-  req.body.sanitizedInput.id = req.params.id
-  const categoria = await repository.update(req.body.sanitizedInput)
-
-  if (!categoria) {
-    return res.status(404).send({ message: 'categoria not found' })
+  try {
+    const id = Number.parseInt(req.params.id)
+    const categorias = em.getReference(Categoria, id)
+    em.assign(categorias, req.body)
+    await em.flush()
+    res.status(200).json({ message: 'Categoria updated' })
+  } catch (error: any) {
+    res.status(500).json({ message: error.message })
   }
-
-  return res.status(200).send({ message: 'categoria updated successfully', data: categoria })
 }
 
 async function remove(req: Request, res: Response) {
-  const id = req.params.id
-  const categoria = await repository.delete({ id })
-
-  if (!categoria) {
-    res.status(404).send({ message: 'categoria not found' })
-  } else {
-    res.status(200).send({ message: 'categoria deleted successfully' })
+  try {
+    const id = Number.parseInt(req.params.id)
+    const categorias = em.getReference(Categoria, id)
+    await em.removeAndFlush(categorias)
+    res.status(200).send({ message: 'Categoria deleted' })
+  } catch (error: any) {
+    res.status(500).json({ message: error.message })
   }
 }
 
-export { sanitizeCategoriaInput, findAll, findOne, add, update, remove }
+export {findAll, findOne, add, update, remove }

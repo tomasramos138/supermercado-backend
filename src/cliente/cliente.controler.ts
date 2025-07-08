@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express'
+/*import { Request, Response, NextFunction } from 'express'
 import { ClienteRepository} from './cliente.repository.js' //asignaZona
 import { Cliente } from './cliente.entity.js'
 
@@ -72,3 +72,4 @@ async function remove(req: Request, res: Response) {
 }
 
 export { sanitizeClienteInput, findAll, findOne, add, update, remove }
+*/

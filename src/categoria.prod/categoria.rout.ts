@@ -1,10 +1,10 @@
 import { Router } from 'express'
-import { sanitizeCategoriaInput, findAll, findOne, add, update, remove } from './categoria.controler.js'
+import { findAll, findOne, add, update, remove } from './categoria.controler.js'
 
 export const CategoriaRouter = Router()
 CategoriaRouter.get('/', findAll)
 CategoriaRouter.get('/:id', findOne)
-CategoriaRouter.post('/', sanitizeCategoriaInput, add)
-CategoriaRouter.put('/:id', sanitizeCategoriaInput, update)
-CategoriaRouter.patch('/:id', sanitizeCategoriaInput, update)
+CategoriaRouter.post('/', add)
+CategoriaRouter.put('/:id', update)
+CategoriaRouter.patch('/:id', update)
 CategoriaRouter.delete('/:id', remove)

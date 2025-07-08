@@ -1,4 +1,4 @@
-import { Zona } from "./zona.entity.js"
+/*import { Zona } from "./zona.entity.js"
 import { Repository } from "../shared/interfaz/respository.js"                  
 function asignaZona(){}//hacer
 //export { asignaZona }
@@ -37,3 +37,5 @@ export class ZonaRepository implements Repository<Zona> {
     }
   }
 }
+
+*/

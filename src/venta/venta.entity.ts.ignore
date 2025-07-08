@@ -1,7 +1,7 @@
-import { RandomUUIDOptions } from 'node:crypto';
+/*import { RandomUUIDOptions } from 'node:crypto';
 import{ Cliente } from '../cliente/cliente.entity';
 import{ Distribuidor } from '../distribuidor/distribuidor.entity';
-import{ ItemVenta } from '../item.venta/item.entity';
+import{ ItemVenta } from '../item-venta/item.entity';
 import crypto from 'node:crypto'
 export class Venta {
     constructor(
@@ -12,3 +12,18 @@ export class Venta {
       public id=crypto.randomUUID(),
     ) {}
   }
+*/
+
+import {
+  Entity,
+  OneToMany,
+  Property,
+  Cascade,
+  Collection,
+} from '@mikro-orm/core'
+import { BaseEntity} from '../shared/baseEntity.entity.js'
+
+@Entity()
+export class Venta extends BaseEntity {
+
+}
