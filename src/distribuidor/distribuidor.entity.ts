@@ -1,15 +1,35 @@
-//import{Venta} from '../venta/venta.entity';
-//import { Zona } from '../zona/zona.entity';
-import crypto from 'node:crypto';
-export class Distribuidor {
-    constructor(
-      public id=crypto.randomUUID(),
-      public name: string,
-      public apellido: string,
-      public valorEntrega:number,
-      public ventas:string,//Venta[]
-      public zona:string,//Zona
-    ) {}
-  }
+import {
+  Entity,
+  Property,
+  Cascade,
+  ManyToOne,
+  Rel,
+  Collection,
+  OneToMany,
+} from '@mikro-orm/core'
+import { BaseEntity } from '../shared/baseEntity.entity.js'
+import { Venta } from '../venta/venta.entity.js'
+import { Zona } from '../zona/zona.entity.js'
 
-  
+  @Entity()
+export class Distribuidor extends BaseEntity {
+  @Property({ nullable: false })
+  name!: string
+
+  @Property({ nullable: false })
+  apellido!: string
+
+  @Property({ nullable: false })
+  dni!: number
+
+  @Property({ nullable: false })
+  valorEntrega!: number
+
+  @OneToMany(() => Venta, (venta) => venta.distribuidor, {
+    cascade: [Cascade.ALL],
+  })
+  ventad = new Collection<Venta>(this)
+
+  @ManyToOne(() => Zona, { nullable: true })
+  zona!: Rel<Zona>
+}

@@ -1,15 +1,17 @@
-/*import { Request, Response, NextFunction } from 'express'
-import { ClienteRepository} from './cliente.repository.js' //asignaZona
+import { Request, Response, NextFunction } from 'express'
 import { Cliente } from './cliente.entity.js'
+import {orm} from '../shared/orm.js'
 
-const repository = new ClienteRepository()
+const em = orm.em
 
 function sanitizeClienteInput(req: Request, res: Response, next: NextFunction) {
   req.body.sanitizedInput = {
     name: req.body.name,
     apellido: req.body.apellido,
+    dni: req.body.dni,
     usuario: req.body.usuario,
     contraseña: req.body.contraseña,
+    ventac: req.body.ventac,
     zona: req.body.zona,
   }
 
@@ -22,54 +24,64 @@ function sanitizeClienteInput(req: Request, res: Response, next: NextFunction) {
 }
 
 async function findAll(req: Request, res: Response) {
-  res.json({ data: await repository.findAll() })
+    try {
+    const clientes = await em.find(
+      Cliente,
+      {},
+      { populate: ['zona'] }//si agreco 'ventac' me traerá las ventas asociadas a cada cliente
+    )
+    res.status(200).json({ message: 'found all clientes', data: clientes })
+  } catch (error: any) {
+    res.status(500).json({ message: error.message })
+  }
 }
 
 async function findOne(req: Request, res: Response) {
-  const id = req.params.id
-  const cliente = await repository.findOne({ id })
-  if (!cliente) {
-    return res.status(404).send({ message: 'Cliente not found' })
+  try {
+    const id = Number.parseInt(req.params.id)
+    const cliente = await em.findOneOrFail(
+      Cliente,
+      { id },
+      { populate: ['zona'] }
+    )
+    res.status(200).json({ message: 'found cliente', data: cliente })
+  } catch (error: any) {
+    res.status(500).json({ message: error.message })
   }
-  res.json({ data: cliente })
 }
 
 async function add(req: Request, res: Response) {
-  const input = req.body.sanitizedInput
-
-  const clienteInput = new Cliente(
-    input.name,
-    input.apellido,
-    input.usuario,
-    input.contraseña,
-    input.zona,
-  )
-
-  const cliente = await repository.add(clienteInput)
-  return res.status(201).send({ message: 'Cliente created', data: cliente })
+  try {
+    const cliente = em.create(Cliente, req.body.sanitizedInput)
+    await em.flush()
+    res.status(201).json({ message: 'cliente created', data: cliente })
+  } catch (error: any) {
+    res.status(500).json({ message: error.message })
+  }
 }
 
 async function update(req: Request, res: Response) {
-  req.body.sanitizedInput.id = req.params.id
-  const cliente = await repository.update(req.body.sanitizedInput)
-
-  if (!cliente) {
-    return res.status(404).send({ message: 'Cliente not found' })
+  try {
+    const id = Number.parseInt(req.params.id)
+    const clienteToUpdate = await em.findOneOrFail(Cliente, { id })
+    em.assign(clienteToUpdate, req.body.sanitizedInput)
+    await em.flush()
+    res
+      .status(200)
+      .json({ message: 'cliente update', data: clienteToUpdate })
+  } catch (error: any) {
+    res.status(500).json({ message: error.message })
   }
-
-  return res.status(200).send({ message: 'Cliente updated successfully', data: cliente })
 }
 
 async function remove(req: Request, res: Response) {
-  const id = req.params.id
-  const cliente = await repository.delete({ id })
-
-  if (!cliente) {
-    res.status(404).send({ message: 'Cliente not found' })
-  } else {
-    res.status(200).send({ message: 'Cliente deleted successfully' })
+  try {
+    const id = Number.parseInt(req.params.id)
+    const cliente = em.getReference(Cliente, id)
+    await em.removeAndFlush(cliente)
+  } catch (error: any) {
+    res.status(500).json({ message: error.message })
   }
 }
 
 export { sanitizeClienteInput, findAll, findOne, add, update, remove }
-*/

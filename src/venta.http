@@ -1,0 +1,36 @@
+### obtener todas las ventas
+GET http://localhost:3000/api/venta
+
+### obtener una venta
+GET http://localhost:3000/api/venta/1
+
+### crear una nueva venta
+POST http://localhost:3000/api/venta
+Content-Type: application/json
+
+{
+"fecha":"5/10/2023",
+"distribuidor":2, 
+"cliente":3
+}
+
+### modificar una venta (PUT - recurso completo e idempotente)
+PUT http://localhost:3000/api/venta/1
+Content-Type: application/json
+
+{
+"fecha":"5/10/2023",
+"distribuidor":2, 
+"cliente":3
+} 
+
+### modificar una venta (PATCH - recurso parcial)
+PATCH http://localhost:3000/api/venta/1
+Content-Type: application/json
+
+{
+  "fecha": "5/10/2024"
+}
+
+### borrar una venta
+DELETE http://localhost:3000/api/venta/1

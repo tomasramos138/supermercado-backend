@@ -1,16 +1,16 @@
-/*import { Request, Response, NextFunction } from 'express'
-import { DistribuidorRepository} from './distribuidor.reository.js' //asignaZona
+import { Request, Response, NextFunction } from 'express'
 import { Distribuidor } from './distribuidor.entity.js'
+import {orm} from '../shared/orm.js'
 
-const repository = new DistribuidorRepository()
+const em = orm.em
 
 function sanitizeDistribuidorInput(req: Request, res: Response, next: NextFunction) {
   req.body.sanitizedInput = {
-    id: req.body.id,
     name: req.body.name,
     apellido: req.body.apellido,
+    dni: req.body.dni,
     valorEntrega: req.body.valorEntrega,
-    ventas: req.body.ventas,
+    ventad: req.body.ventad,
     zona: req.body.zona,
   }
 
@@ -23,56 +23,64 @@ function sanitizeDistribuidorInput(req: Request, res: Response, next: NextFuncti
 }
 
 async function findAll(req: Request, res: Response) {
-  res.json({ data: await repository.findAll() })
+    try {
+    const distribuidores = await em.find(
+      Distribuidor,
+      {},
+      { populate: ['zona'] }//si agreco 'ventac' me traerá las ventas asociadas a cada distribuidor
+    )
+    res.status(200).json({ message: 'found all distribuidor', data: distribuidores })
+  } catch (error: any) {
+    res.status(500).json({ message: error.message })
+  }
 }
 
 async function findOne(req: Request, res: Response) {
-  const id = req.params.id
-  const distribuidor = await repository.findOne({ id })
-  if (!distribuidor) {
-    return res.status(404).send({ message: 'Distribuidor not found' })
+  try {
+    const id = Number.parseInt(req.params.id)
+    const distribuidor = await em.findOneOrFail(
+      Distribuidor,
+      { id },
+      { populate: ['zona'] }
+    )
+    res.status(200).json({ message: 'found distribuidor', data: distribuidor })
+  } catch (error: any) {
+    res.status(500).json({ message: error.message })
   }
-  res.json({ data: distribuidor })
 }
 
 async function add(req: Request, res: Response) {
-  const input = req.body.sanitizedInput
-
-  const distribuidorInput = new Distribuidor(
-    input.id,
-    input.name,
-    input.apellido,
-    input.valorEntrega,
-    input.ventas,
-    input.zona,
-  )
-
-  const character = await repository.add(distribuidorInput)
-  return res.status(201).send({ message: 'Distribuidor created', data: character })
+  try {
+    const distribuidor = em.create(Distribuidor, req.body.sanitizedInput)
+    await em.flush()
+    res.status(201).json({ message: 'distribuidor created', data: distribuidor })
+  } catch (error: any) {
+    res.status(500).json({ message: error.message })
+  }
 }
 
 async function update(req: Request, res: Response) {
-  req.body.sanitizedInput.id = req.params.id
-  const distribuidor = await repository.update(req.body.sanitizedInput)
-
-  if (!distribuidor) {
-    return res.status(404).send({ message: 'Distribuidor not found' })
+  try {
+    const id = Number.parseInt(req.params.id)
+    const distribuidorToUpdate = await em.findOneOrFail(Distribuidor, { id })
+    em.assign(distribuidorToUpdate, req.body.sanitizedInput)
+    await em.flush()
+    res
+      .status(200)
+      .json({ message: 'distribuidor update', data: distribuidorToUpdate })
+  } catch (error: any) {
+    res.status(500).json({ message: error.message })
   }
-
-  return res.status(200).send({ message: 'Distribuidor updated successfully', data: distribuidor })
 }
 
 async function remove(req: Request, res: Response) {
-  const id = req.params.id
-  const distribuidor = await repository.delete({ id })
-
-  if (!distribuidor) {
-    res.status(404).send({ message: 'Distribuidor not found' })
-  } else {
-    res.status(200).send({ message: 'Distribuidor deleted successfully' })
+  try {
+    const id = Number.parseInt(req.params.id)
+    const distribuidor = em.getReference(Distribuidor, id)
+    await em.removeAndFlush(distribuidor)
+  } catch (error: any) {
+    res.status(500).json({ message: error.message })
   }
 }
 
 export { sanitizeDistribuidorInput, findAll, findOne, add, update, remove }
-
-*/

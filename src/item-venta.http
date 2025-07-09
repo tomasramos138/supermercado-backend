@@ -1,0 +1,35 @@
+### obtener todos los itemsVenta
+GET http://localhost:3000/api/item-venta
+
+### obtener un itemVenta
+GET http://localhost:3000/api/item-venta/1
+
+### crear un nuevo itemVenta
+POST http://localhost:3000/api/item-venta
+Content-Type: application/json
+
+{
+"cantidad": 3,
+"producto": 1,
+"venta": 1
+}
+
+### modificar un itemVenta (PUT - recurso completo e idempotente)
+PUT http://localhost:3000/api/item-venta/2
+Content-Type: application/json
+
+{
+"name": "Carinice",
+"description": "carnes y fiambr"
+} 
+
+### modificar un itemVenta (PATCH - recurso parcial)
+PATCH http://localhost:3000/api/item-venta/7
+Content-Type: application/json
+
+{
+  "description": "carnes y achuras"
+}
+
+### borrar un itemVenta
+DELETE http://localhost:3000/api/item-venta/7

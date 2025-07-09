@@ -14,12 +14,12 @@ Content-Type: application/json
 }
 
 ### modificar un categoria (PUT - recurso completo e idempotente)
-PUT http://localhost:3000/api/categoria/7
+PUT http://localhost:3000/api/categoria/2
 Content-Type: application/json
 
 {
-"name": "Cariniceria",
-"descripcion": "carnes y fiambres"
+"name": "Carinice",
+"description": "carnes y fiambr"
 } 
 
 ### modificar un categoria (PATCH - recurso parcial)
@@ -27,7 +27,7 @@ PATCH http://localhost:3000/api/categoria/7
 Content-Type: application/json
 
 {
-  "descripcion": "carnes y achuras"
+  "description": "carnes y achuras"
 }
 
 ### borrar un categoria

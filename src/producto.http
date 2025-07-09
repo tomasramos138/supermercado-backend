@@ -19,15 +19,15 @@ Content-Type: application/json
 }
 
 ### modificar un Productos (PUT - recurso completo e idempotente)
-PUT http://localhost:3000/api/producto/83e10d7d-8f58-402a-9054-0de8e0f384fb
+PUT http://localhost:3000/api/producto/2
 Content-Type: application/json
 
 {
-  "name": "Te",
-  "descripcion": "Te verde",
-  "precio": 100,
+  "name": "vacio",
+  "descripcion": "carnes",
+  "precio": 10000,
   "imagen":"...",
-  "categoria": "Falta conectar la categoria"
+  "categoria": 2
 } 
 
 ### modificar un Productos (PATCH - recurso parcial)

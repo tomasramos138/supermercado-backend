@@ -1,13 +1,15 @@
-/*import { Request, Response, NextFunction } from 'express'
-import { ZonaRepository} from './zona.repository.js' //asignaZona
+import { Request, Response, NextFunction } from 'express'
 import { Zona } from './zona.entity.js'
+import { orm } from '../shared/orm.js'
 
-const repository = new ZonaRepository()
+const em = orm.em
 
 function sanitizeZonaInput(req: Request, res: Response, next: NextFunction) {
   req.body.sanitizedInput = {
     name:req.body.name,
-    descripcion: req.body.descripcion,
+    description: req.body.description,
+    clientes: req.body.clientes,
+    distribuidores: req.body.distribuidores,
   }
 
   Object.keys(req.body.sanitizedInput).forEach((key) => {
@@ -19,52 +21,65 @@ function sanitizeZonaInput(req: Request, res: Response, next: NextFunction) {
 }
 
 async function findAll(req: Request, res: Response) {
-  res.json({ data: await repository.findAll() })
+    try {
+    const zonas = await em.find(
+      Zona,
+      {},
+      //{ populate: ['clientes', 'distribuidores'] } si quiero traer los clientes y distribuidores asociados a la zona
+    )
+    res.status(200).json({ message: 'found all zonas', data: zonas })
+  } catch (error: any) {
+    res.status(500).json({ message: error.message })
+  }
 }
 
 async function findOne(req: Request, res: Response) {
-  const id = req.params.id
-  const zona = await repository.findOne({ id })
-  if (!zona) {
-    return res.status(404).send({ message: 'Zona not found' })
+  try {
+    const id = Number.parseInt(req.params.id)
+    const zona = await em.findOneOrFail(
+      Zona,
+      { id },
+      { populate: ['clientes', 'distribuidores'] } //si quiero traer los clientes y distribuidores asociados a la zona
+    )
+    res.status(200).json({ message: 'found zona', data: zona })
+  } catch (error: any) {
+    res.status(500).json({ message: error.message })
   }
-  res.json({ data: zona })
 }
 
 async function add(req: Request, res: Response) {
-  const input = req.body.sanitizedInput
-
-  const zonaInput = new Zona(
-  input.name,
-  input.descripcion,  
-  )
-
-  const zona = await repository.add(zonaInput)
-  return res.status(201).send({ message: 'Zona created', data: zona })
+  try {
+    const zona = em.create(Zona, req.body.sanitizedInput)
+    await em.flush()
+    res.status(201).json({ message: 'zona created', data: zona })
+  } catch (error: any) {
+    res.status(500).json({ message: error.message })
+  }
 }
 
 async function update(req: Request, res: Response) {
-  req.body.sanitizedInput.id = req.params.id
-  const zona = await repository.update(req.body.sanitizedInput)
-
-  if (!zona) {
-    return res.status(404).send({ message: 'Zona not found' })
+ try {
+    const id = Number.parseInt(req.params.id)
+    const zonaToUpdate = await em.findOneOrFail(Zona, { id })
+    em.assign(zonaToUpdate, req.body.sanitizedInput)
+    await em.flush()
+    res
+      .status(200)
+      .json({ message: 'zona updated', data: zonaToUpdate })
+  } catch (error: any) {
+    res.status(500).json({ message: error.message })
   }
-
-  return res.status(200).send({ message: 'Zona updated successfully', data: zona })
 }
 
 async function remove(req: Request, res: Response) {
-  const id = req.params.id
-  const zona = await repository.delete({ id })
-
-  if (!zona) {
-    res.status(404).send({ message: 'Zona not found' })
-  } else {
-    res.status(200).send({ message: 'Zona deleted successfully' })
+  try {
+    const id = Number.parseInt(req.params.id)
+    const zona = em.getReference(Zona, id)
+    await em.removeAndFlush(zona)
+    res.status(200).json({ message: 'zona deleted', data: zona })
+  } catch (error: any) {
+    res.status(500).json({ message: error.message })
   }
 }
 
 export { sanitizeZonaInput, findAll, findOne, add, update, remove }
-
-*/

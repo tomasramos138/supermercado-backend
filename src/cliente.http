@@ -11,33 +11,34 @@ POST http://localhost:3000/api/cliente
 Content-Type: application/json
 
 {
-  "name": "Ignacio",
-  "apeellido": "Corsallini",
-  "usuario": "ignacioCorsallini",
+  "name": "Tomas",
+  "apellido": "Ramos",
+  "dni": "45504689",
+  "usuario": "tomasRamos@gmail.com",
   "contraseña":"12345",
-  "zona": "zona2"
+  "zona": 2
 }
 
 ### modificar un cliente (PUT - recurso completo e idempotente)
-PUT http://localhost:3000/api/cliente/a02b91bc-3769-4221-beb1-d7a3aeba7dad
+PUT http://localhost:3000/api/cliente/1
 Content-Type: application/json
 
 {
   "name": "Luciana",
   "apellido": "Echeveste",
+  "dni": "87654321",
   "usuario": "lucianaEcheveste",
   "contraseña":"54321",
-  "zona": "zona3"
+  "zona": 2
 } 
 
 ### modificar un cliente (PATCH - recurso parcial)
-PATCH http://localhost:3000/api/cliente/a02b91bc-3769-4221-beb1-d7a3aeba7dad
+PATCH http://localhost:3000/api/cliente/1
 Content-Type: application/json
 
 {
-  "contraseña":"123",
-  "zona": "zona4"
+  "contraseña":"123"
 }
 
 ### borrar un cliente
-DELETE http://localhost:3000/api/cliente/a02b91bc-3769-4221-beb1-d7a3aeba7dad
+DELETE http://localhost:3000/api/cliente/1

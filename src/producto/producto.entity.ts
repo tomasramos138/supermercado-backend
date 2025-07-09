@@ -1,15 +1,15 @@
 import {
   Entity,
   Property,
-  ManyToMany,
   Cascade,
   ManyToOne,
   Rel,
   Collection,
+  OneToMany,
 } from '@mikro-orm/core'
 import { BaseEntity } from '../shared/baseEntity.entity.js'
 import { Categoria } from "../categoria.prod/categoria.entity.js";
-//import { ItemVenta } from '../item-venta/item.entity.ignore.js'
+import { ItemVenta } from '../item-venta/item.entity.js'
 
   @Entity()
 export class Producto extends BaseEntity {
@@ -28,9 +28,8 @@ export class Producto extends BaseEntity {
   @Property({ nullable: false })
   imagen!: string //ver que tipo de dato es la imagen
 
- /* @ManyToMany(() => ItemVenta, (itemsVenta) => itemsVenta.productos, {
+  @OneToMany(() => ItemVenta, (itemVenta) => itemVenta.producto, {
     cascade: [Cascade.ALL],
-    owner: true,
   })
-  itemsVenta = new Collection<ItemVenta>(this)*/
+  itemsVenta = new Collection<ItemVenta>(this)
 }
