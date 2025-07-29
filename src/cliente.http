@@ -33,11 +33,11 @@ Content-Type: application/json
 } 
 
 ### modificar un cliente (PATCH - recurso parcial)
-PATCH http://localhost:3000/api/cliente/1
+PATCH http://localhost:3000/api/cliente/4
 Content-Type: application/json
 
 {
-  "contraseña":"123"
+  "zona":3
 }
 
 ### borrar un cliente

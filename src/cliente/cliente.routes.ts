@@ -3,6 +3,7 @@ import { sanitizeClienteInput, findAll, findOne, add, update, remove } from './c
 
 export const clienteRouter = Router()
 clienteRouter.get('/', findAll)
+clienteRouter.get('/login', findOne)
 clienteRouter.get('/:id', findOne)
 clienteRouter.post('/', sanitizeClienteInput, add)
 clienteRouter.put('/:id', sanitizeClienteInput, update)
