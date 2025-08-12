@@ -9,6 +9,7 @@ function sanitizeProductoInput(req: Request, res: Response, next: NextFunction) 
     name: req.body.name,
     descripcion: req.body.descripcion,
     precio: req.body.precio,
+    stock: req.body.stock,
     imagen: req.body.imagen,
     categoria: req.body.categoria,
   }

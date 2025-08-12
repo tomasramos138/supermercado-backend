@@ -38,12 +38,12 @@ export class Venta extends BaseEntity {
   @Property({ nullable: false })
   fecha!: Date
 
-  /*@Property({ nullable: false })
-  total!: number*/ //se puede calcular al momento de mostrar la venta, no es necesario guardarlo
-
   @ManyToOne(() => Distribuidor, { nullable: false })
   distribuidor!: Distribuidor
 
   @ManyToOne(() => Cliente, { nullable: false })
   cliente!: Distribuidor
 }
+
+  /*@Property({ nullable: false })
+  total!: number*/ //se puede calcular al momento de mostrar la venta, no es necesario guardarlo

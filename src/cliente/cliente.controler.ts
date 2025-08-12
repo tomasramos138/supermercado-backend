@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
 import { Cliente } from './cliente.entity.js'
 import {orm} from '../shared/orm.js'
+import jwt from "jsonwebtoken" //libreria para manejar token JWT
 
 const em = orm.em
 
@@ -11,6 +12,7 @@ function sanitizeClienteInput(req: Request, res: Response, next: NextFunction) {
     dni: req.body.dni,
     usuario: req.body.usuario,
     contraseña: req.body.contraseña,
+    rol: req.body.rol, // Asumiendo que el rol por defecto es cliente
     ventac: req.body.ventac,
     zona: req.body.zona,
   }
@@ -84,4 +86,16 @@ async function remove(req: Request, res: Response) {
   }
 }
 
-export { sanitizeClienteInput, findAll, findOne, add, update, remove }
+async function countClientes(req: Request, res: Response) {
+  try {
+    const totalClientes = await em.count(Cliente);
+    res.status(200).json({
+      message: 'total clientes',
+      data: totalClientes
+    });
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
+export { sanitizeClienteInput, findAll, findOne, add, update, remove, countClientes }

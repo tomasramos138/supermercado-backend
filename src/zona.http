@@ -9,8 +9,8 @@ POST http://localhost:3000/api/zona
 Content-Type: application/json
 
 {
-  "name": "Zona Oeste",
-  "description": "Entre oroño y el rio"
+  "name": "Zona Este",
+  "description": "....."
 }
 
 ### modificar un zona (PUT - recurso completo e idempotente)

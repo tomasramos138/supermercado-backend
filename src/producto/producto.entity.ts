@@ -26,6 +26,9 @@ export class Producto extends BaseEntity {
   precio!: number
 
   @Property({ nullable: false })
+  stock!: number
+
+  @Property({ nullable: false })
   imagen!: string //ver que tipo de dato es la imagen
 
   @OneToMany(() => ItemVenta, (itemVenta) => itemVenta.producto, {

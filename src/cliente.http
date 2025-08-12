@@ -11,13 +11,14 @@ POST http://localhost:3000/api/cliente
 Content-Type: application/json
 
 {
-  "name": "Tomas",
-  "apellido": "Ramos",
-  "dni": "45504689",
-  "usuario": "tomasRamos@gmail.com",
-  "contraseña":"12345",
+  "name": "Ignacio",
+  "apellido": "Corsalini",
+  "dni": "45504158",
+  "usuario": "ignacioCorsalini@gmail.com",
+  "contraseña":"$2b$10$6DBsy2STGClEOGFYr1S8dubdPRdpdMpiRmuQM12y9yrtZLcrjKINO",
   "zona": 2
 }
+### Si el rol es true, es admin, si es false es cliente
 
 ### modificar un cliente (PUT - recurso completo e idempotente)
 PUT http://localhost:3000/api/cliente/1
@@ -29,16 +30,20 @@ Content-Type: application/json
   "dni": "87654321",
   "usuario": "lucianaEcheveste",
   "contraseña":"54321",
+  "rol": false, // false = cliente, true = admin
   "zona": 2
 } 
 
 ### modificar un cliente (PATCH - recurso parcial)
-PATCH http://localhost:3000/api/cliente/4
+PATCH http://localhost:3000/api/cliente/5
 Content-Type: application/json
 
-{
-  "zona":3
+{ 
+  "usuario": "facundoGregoret@gmail.com",
+  "rol": false
 }
+
+###"contraseña": "$2b$10$6DBsy2STGClEOGFYr1S8dubdPRdpdMpiRmuQM12y9yrtZLcrjKINO"
 
 ### borrar un cliente
 DELETE http://localhost:3000/api/cliente/1
