@@ -11,6 +11,7 @@ function sanitizeVentaInput(
 ) {
   req.body.sanitizedInput = {
     fecha: req.body.fecha,
+    total: req.body.total,
     itemsVenta: req.body.itemsVenta,
     distribuidor: req.body.distribuidor,
     cliente: req.body.cliente,

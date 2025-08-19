@@ -38,6 +38,9 @@ export class Venta extends BaseEntity {
   @Property({ nullable: false })
   fecha!: Date
 
+  @Property({ nullable: false })
+  total!: number
+
   @ManyToOne(() => Distribuidor, { nullable: false })
   distribuidor!: Distribuidor
 

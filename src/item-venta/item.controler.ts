@@ -7,6 +7,8 @@ const em = orm.em
 function sanitizeItemVentaInput(req: Request, res: Response, next: NextFunction) {
   req.body.sanitizedInput = {
     cantidad: req.body.cantidad,
+    subtotal: req.body.subtotal,
+    precio: req.body.precio,
     producto: req.body.producto,
     venta: req.body.venta,
   }

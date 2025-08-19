@@ -17,8 +17,14 @@ export class ItemVenta extends BaseEntity {
   @Property()
   cantidad!: number
 
+  @Property({nullable: false })
+  precio!: number;
+
+  @Property({ nullable: false })
+  subtotal!: number
+
   @ManyToOne(() => Producto, {nullable: false})
-  producto!: Rel<Venta>
+  producto!: Rel<Producto>
 
   @ManyToOne(() => Venta, {nullable: false})
   venta!: Rel<Venta>

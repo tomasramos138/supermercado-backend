@@ -49,6 +49,23 @@ async function findOne(req: Request, res: Response) {
   }
 }
 
+async function findByZona(req: Request, res: Response) {
+  try {
+    const zonaId = Number.parseInt(req.params.zonaId)
+    const distribuidores = await em.find(
+      Distribuidor,
+      { zona: zonaId },
+      { populate: ['zona'] }
+    )
+    res.status(200).json({ 
+      message: 'found distribuidores by zona', 
+      data: distribuidores 
+    })
+  } catch (error: any) {
+    res.status(500).json({ message: error.message })
+  }
+}
+
 async function add(req: Request, res: Response) {
   try {
     const distribuidor = em.create(Distribuidor, req.body.sanitizedInput)
@@ -83,4 +100,4 @@ async function remove(req: Request, res: Response) {
   }
 }
 
-export { sanitizeDistribuidorInput, findAll, findOne, add, update, remove }
+export { sanitizeDistribuidorInput, findAll, findOne, add, update, remove, findByZona }

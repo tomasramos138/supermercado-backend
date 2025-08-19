@@ -11,12 +11,15 @@ POST http://localhost:3000/api/distribuidor
 Content-Type: application/json
 
 {
-  "name": "Ignacio",
-  "apellido": "Corsallini",
+  "name": "Distribuidor Zona 4",
+  "apellido": "Dis",
   "dni": "12345678",
-  "valorEntrega":"12345",
-  "zona": 2
+  "valorEntrega":"2000",
+  "zona": 4
 }
+
+### obtener distribuidores por zona (versión alternativa con query parameter)
+GET http://localhost:3000/api/distribuidor/zona/2
 
 ### modificar un distribuidor (PUT - recurso completo e idempotente)
 PUT http://localhost:3000/api/distribuidor/1
