@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
 import { Cliente } from './cliente.entity.js'
 import {orm} from '../shared/orm.js'
-import jwt from "jsonwebtoken" //libreria para manejar token JWT
+import bycrypt from 'bcrypt'
 
 const em = orm.em
 
@@ -12,7 +12,7 @@ function sanitizeClienteInput(req: Request, res: Response, next: NextFunction) {
     dni: req.body.dni,
     usuario: req.body.usuario,
     contraseña: req.body.contraseña,
-    rol: req.body.rol, // Asumiendo que el rol por defecto es cliente
+    rol: req.body.rol, 
     ventac: req.body.ventac,
     zona: req.body.zona,
   }
@@ -64,15 +64,21 @@ async function add(req: Request, res: Response) {
 
 async function update(req: Request, res: Response) {
   try {
-    const id = Number.parseInt(req.params.id)
-    const clienteToUpdate = await em.findOneOrFail(Cliente, { id })
-    em.assign(clienteToUpdate, req.body.sanitizedInput)
-    await em.flush()
-    res
-      .status(200)
-      .json({ message: 'cliente update', data: clienteToUpdate })
+    const id = Number.parseInt(req.params.id);
+    const clienteToUpdate = await em.findOneOrFail(Cliente, { id });
+
+    // se encripta la nueva contraseña
+    if (req.body.sanitizedInput.contraseña) {
+      const hashedPassword = await bycrypt.hash(req.body.sanitizedInput.contraseña, 10);
+      req.body.sanitizedInput.contraseña = hashedPassword;
+    }
+
+    em.assign(clienteToUpdate, req.body.sanitizedInput);
+    await em.flush();
+
+    res.status(200).json({ message: 'cliente update', data: clienteToUpdate });
   } catch (error: any) {
-    res.status(500).json({ message: error.message })
+    res.status(500).json({ message: error.message });
   }
 }
 

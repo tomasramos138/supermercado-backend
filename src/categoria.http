@@ -9,8 +9,8 @@ POST http://localhost:3000/api/categoria
 Content-Type: application/json
 
 {
-"name": "Fiambreria",
-"description": "Quesos, fiambres y embutidos"
+"name": "Almacen",
+"description": "Bebidas y alimentos"
 }
 
 ### modificar un categoria (PUT - recurso completo e idempotente)

@@ -11,12 +11,12 @@ POST http://localhost:3000/api/producto
 Content-Type: application/json
 
 {
-  "name": "leche entera",
-  "descripcion": "lacteo",
-  "precio": 500,
-  "stock": 5,
-  "imagen":"...",
-  "categoria": 1
+  "name": "Fideos",
+  "descripcion": "Precio por unidad",
+  "precio": 800,
+  "stock": 15,
+  "imagen":"../imagenes/pasta.png",
+  "categoria": 5
 }
 
 ### modificar un Productos (PUT - recurso completo e idempotente)
@@ -32,11 +32,11 @@ Content-Type: application/json
 } 
 
 ### modificar un Productos (PATCH - recurso parcial)
-PATCH http://localhost:3000/api/producto/83e10d7d-8f58-402a-9054-0de8e0f384fb
+PATCH http://localhost:3000/api/producto/1
 Content-Type: application/json
 
 {
-"precio": 150
+"imagen":"../imagenes/vacio.png"
 }
 
 ### borrar un Productos
