@@ -86,4 +86,16 @@ async function remove(req: Request, res: Response) {
   }
 }
 
-export { sanitizeVentaInput, findAll, findOne, add, update, remove }
+async function countVentas(req: Request, res: Response) {
+  try {
+    const totalVentas = await em.count(Venta);
+    res.status(200).json({
+      message: 'total ventas',
+      data: totalVentas
+    });
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
+export { sanitizeVentaInput, findAll, findOne, add, update, remove, countVentas }
