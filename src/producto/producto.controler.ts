@@ -83,5 +83,17 @@ async function remove(req: Request, res: Response) {
   }
 }
 
-export { sanitizeProductoInput, findAll, findOne, add, update, remove }
+async function countStock(req: Request, res: Response) {
+  try {
+    const result = await em.execute('SELECT SUM(stock) as totalStock FROM producto')
+    const totalStock = Number(result[0]?.totalStock ?? 0)
+
+    res.status(200).json({ message: 'total stock', data: totalStock })
+  } catch (error: any) {
+    res.status(500).json({ message: error.message })
+  }
+}
+
+
+export { sanitizeProductoInput, findAll, findOne, add, update, remove, countStock}
 

@@ -5,7 +5,11 @@ export const orm = await MikroORM.init({
   entities: ['dist/**/*.entity.js'],
   entitiesTs: ['src/**/*.entity.ts'],
   dbName: 'supermercado',
+<<<<<<< HEAD
   clientUrl: 'mysql://root:45509130@localhost:3306/supermercado',
+=======
+  clientUrl: 'mysql://root:Root123!@localhost:3306/supermercado',
+>>>>>>> 87edbab (funcion stockTotal)
   highlighter: new SqlHighlighter(),
   debug: true,
   schemaGenerator: {
