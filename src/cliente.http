@@ -35,11 +35,11 @@ Content-Type: application/json
 } 
 
 ### modificar un cliente (PATCH - recurso parcial)
-PATCH http://localhost:3000/api/cliente/6
+PATCH http://localhost:3000/api/cliente/2
 Content-Type: application/json
 
 { 
-  "contraseña": "$2b$10$6DBsy2STGClEOGFYr1S8dubdPRdpdMpiRmuQM12y9yrtZLcrjKINO"
+  "rol": true
 }
 
 ###"contraseña": "$2b$10$6DBsy2STGClEOGFYr1S8dubdPRdpdMpiRmuQM12y9yrtZLcrjKINO"
