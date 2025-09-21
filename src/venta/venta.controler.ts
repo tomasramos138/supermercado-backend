@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
 import { Venta } from './venta.entity.js'
 import { orm } from '../shared/orm.js'
+import { Producto } from '../producto/producto.entity.js'
 
 const em = orm.em
 
@@ -86,6 +87,34 @@ async function remove(req: Request, res: Response) {
   }
 }
 
+async function verificarStock(req: Request, res: Response) {
+  try {
+    const items: { productoId: number; cantidad: number }[] = req.body.items
+
+    if (!items || !Array.isArray(items)) {
+      return res.status(400).json({ message: "El formato de 'items' es inválido." })
+    }
+
+    for (const item of items) {
+      const producto = await em.findOne(Producto, { id: item.productoId })
+
+      if (!producto) {
+        return res.status(404).json({ message: `Producto con ID ${item.productoId} no encontrado.` })
+      }
+
+      if (producto.stock < item.cantidad) {
+        return res.status(400).json({
+          message: `Stock insuficiente para el producto: ${producto.name}. Disponible: ${producto.stock}, Solicitado: ${item.cantidad}`,
+        })
+      }
+    }
+
+    res.status(200).json({ message: 'Stock disponible para todos los productos.' })
+  } catch (error: any) {
+    res.status(500).json({ message: error.message })
+  }
+}
+
 async function countVentas(req: Request, res: Response) {
   try {
     const totalVentas = await em.count(Venta);
@@ -98,4 +127,4 @@ async function countVentas(req: Request, res: Response) {
   }
 }
 
-export { sanitizeVentaInput, findAll, findOne, add, update, remove, countVentas }
+export { sanitizeVentaInput, findAll, findOne, add, update, remove, countVentas, verificarStock }

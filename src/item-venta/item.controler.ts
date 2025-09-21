@@ -1,14 +1,14 @@
 import { Request, Response, NextFunction } from 'express'
 import { orm } from '../shared/orm.js'
-import { ItemVenta} from '../item-venta/item.entity.js'
+import { ItemVenta } from '../item-venta/item.entity.js'
+import { Producto } from '../producto/producto.entity.js'
+import { Venta } from '../venta/venta.entity.js'
 
 const em = orm.em
 
 function sanitizeItemVentaInput(req: Request, res: Response, next: NextFunction) {
   req.body.sanitizedInput = {
     cantidad: req.body.cantidad,
-    subtotal: req.body.subtotal,
-    precio: req.body.precio,
     producto: req.body.producto,
     venta: req.body.venta,
   }
@@ -50,9 +50,31 @@ async function findOne(req: Request, res: Response) {
 
 async function add(req: Request, res: Response) {
   try {
-    const itemVenta = em.create(ItemVenta, req.body.sanitizedInput)
-    await em.flush()
-    res.status(201).json({ message: 'ItemVenta created', data: itemVenta })
+    const { cantidad, producto: productoId, venta: ventaId } = req.body.sanitizedInput
+
+    await em.transactional(async (em) => {
+      const producto = await em.findOneOrFail(Producto, { id: productoId })
+      const venta = await em.findOneOrFail(Venta, { id: ventaId })
+
+      if (producto.stock < cantidad) {
+        throw new Error(`Stock insuficiente para el producto: ${producto.name}`)
+      }
+
+      producto.stock -= cantidad
+
+      const subtotal = producto.precio * cantidad
+
+      const itemVenta = em.create(ItemVenta, {
+        cantidad,
+        precio: producto.precio,
+        subtotal,
+        producto,
+        venta,
+      })
+
+      await em.persistAndFlush(itemVenta)
+      res.status(201).json({ message: 'ItemVenta created', data: itemVenta })
+    })
   } catch (error: any) {
     res.status(500).json({ message: error.message })
   }
@@ -83,4 +105,3 @@ async function remove(req: Request, res: Response) {
 }
 
 export { sanitizeItemVentaInput, findAll, findOne, add, update, remove }
-
