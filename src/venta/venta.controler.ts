@@ -31,7 +31,7 @@ async function findAll(req: Request, res: Response) {
     const ventas = await em.find(
       Venta,
       {},
-      { populate: ['cliente', 'distribuidor', 'itemsVenta'] }//trae el cliente, distribuidor y los items de la venta
+      { populate: ['cliente', 'distribuidor', 'itemsVenta', 'itemsVenta.producto'] }//trae el cliente, distribuidor y los items de la venta
     )
     res.status(200).json({ message: 'found all ventas', data: ventas })
   } catch (error: any) {
