@@ -104,4 +104,24 @@ async function countClientes(req: Request, res: Response) {
   }
 }
 
-export { sanitizeClienteInput, findAll, findOne, add, update, remove, countClientes }
+async function findByNameStart(req: Request, res: Response) {
+  try {
+    const { q } = req.query;
+
+    if (!q || typeof q !== "string") {
+      return res.status(400).json({ message: "El parámetro 'q' es requerido" });
+    }
+
+    const clientes = await em.find(
+      Cliente,
+      { name: { $like: `${q}%` } }, // comienza con q
+      { populate: ['zona'] }
+    );
+
+    res.status(200).json({ message: 'found clientes by name start', data: clientes });
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
+export { sanitizeClienteInput, findAll, findOne, add, update, remove, countClientes, findByNameStart}
