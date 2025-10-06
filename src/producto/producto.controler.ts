@@ -1,8 +1,27 @@
 import { Request, Response, NextFunction } from 'express'
 import { orm } from '../shared/orm.js'
 import { Producto } from './producto.entity.js'
+import multer from 'multer';
+import fs from 'fs';
 
 const em = orm.em
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    const uploadPath = '../supermercado-front-js/public/imagenes/';
+    // Crear directorio si no existe
+    if (!fs.existsSync(uploadPath)) {
+      fs.mkdirSync(uploadPath, { recursive: true });
+    }
+    cb(null, uploadPath);
+  },
+  filename: function (req, file, cb) {
+    // Guardar directamente con el nombre original
+    cb(null, file.originalname);
+  }
+});
+
+const upload = multer({ storage: storage });
 
 function sanitizeProductoInput(req: Request, res: Response, next: NextFunction) {
   req.body.sanitizedInput = {
@@ -95,5 +114,32 @@ async function countStock(req: Request, res: Response) {
 }
 
 
-export { sanitizeProductoInput, findAll, findOne, add, update, remove, countStock}
+function rutaUpload(req: Request, res: Response, next: NextFunction) {
+  console.log('rutaUpload ejecutándose...');
+  upload.single('imagen')(req, res, function (err) {
+    if (err) {
+      console.error('Error en multer:', err);
+      return res.status(400).json({ message: `Error al subir archivo: ${err.message}` });
+    }
+    console.log('Multer completado, archivo:', req.file);
+    next();
+  });
+}
 
+async function subirImagenProducto(req: Request, res: Response) {
+  console.log('SubirImagenProducto ejecutándose...');
+  console.log('Archivo recibido:', req.file);
+
+  if (!req.file) {
+    console.log('No hay archivo en la request');
+    return res.status(400).json({ message: 'No se ha subido ningún archivo' });
+  }
+
+  console.log('Imagen guardada correctamente');
+  res.json({ 
+    message: 'Imagen subida correctamente',
+    filename: req.file.originalname 
+  });
+}
+
+export { sanitizeProductoInput, findAll, findOne, add, update, remove, countStock, subirImagenProducto, rutaUpload}

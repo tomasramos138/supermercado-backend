@@ -114,11 +114,20 @@ async function findByNameStart(req: Request, res: Response) {
 
     const clientes = await em.find(
       Cliente,
-      { name: { $like: `${q}%` } }, // comienza con q
+      {
+        $or: [
+          { name: { $like: `${q}%` } },  
+          { apellido: { $like: `${q}%` } },
+          { usuario: { $like: `${q}%` } }
+        ]
+      },
       { populate: ['zona'] }
     );
 
-    res.status(200).json({ message: 'found clientes by name start', data: clientes });
+    res.status(200).json({ 
+      message: 'Clientes encontrados por nombre o apellido', 
+      data: clientes 
+    });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }
