@@ -22,7 +22,7 @@ export class Producto extends BaseEntity {
   @ManyToOne(() => Categoria, { nullable: false })
   categoria!: Rel<Categoria>
 
-  @Property({ nullable: false })
+  @Property({columnType: 'decimal(10,2)'})
   precio!: number
 
   @Property({ nullable: false })

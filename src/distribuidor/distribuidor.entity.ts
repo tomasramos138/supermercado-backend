@@ -22,7 +22,7 @@ export class Distribuidor extends BaseEntity {
   @Property({ nullable: false })
   dni!: number
 
-  @Property({ nullable: false })
+  @Property({columnType: 'decimal(10,2)'})
   valorEntrega!: number
 
   @OneToMany(() => Venta, (venta) => venta.distribuidor, {
