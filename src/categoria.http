@@ -1,34 +1,42 @@
 ### obtener todos los categorias
 GET http://localhost:3000/api/categoria
 
+
 ### obtener un categoria
 GET http://localhost:3000/api/categoria/1
+
 
 ### crear un nuevo categoria
 POST http://localhost:3000/api/categoria
 Content-Type: application/json
 
+
 {
-"name": "Almacen",
+"name": "Aljyfhtdhacen",
 "description": "Bebidas y alimentos"
 }
+
 
 ### modificar un categoria (PUT - recurso completo e idempotente)
 PUT http://localhost:3000/api/categoria/2
 Content-Type: application/json
 
+
 {
 "name": "Carinice",
 "description": "carnes y fiambr"
-} 
+}
+
 
 ### modificar un categoria (PATCH - recurso parcial)
 PATCH http://localhost:3000/api/categoria/7
 Content-Type: application/json
 
+
 {
-  "description": "carnes y achuras"
+ "description": "carnes y achuras"
 }
+
 
 ### borrar un categoria
 DELETE http://localhost:3000/api/categoria/7
