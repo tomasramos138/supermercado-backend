@@ -31,6 +31,7 @@ function sanitizeProductoInput(req: Request, res: Response, next: NextFunction) 
     stock: req.body.stock,
     imagen: req.body.imagen,
     categoria: req.body.categoria,
+    estado: req.body.estado,
   }
 
   Object.keys(req.body.sanitizedInput).forEach((key) => {

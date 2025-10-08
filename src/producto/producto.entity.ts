@@ -31,6 +31,9 @@ export class Producto extends BaseEntity {
   @Property({ nullable: false })
   imagen!: string //ver que tipo de dato es la imagen
 
+  @Property({ nullable: false })
+  estado!: boolean 
+
   @OneToMany(() => ItemVenta, (itemVenta) => itemVenta.producto, {
     cascade: [Cascade.ALL],
   })
