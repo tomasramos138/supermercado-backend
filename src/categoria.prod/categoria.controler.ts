@@ -63,4 +63,31 @@ async function remove(req: Request, res: Response) {
   }
 }
 
-export {findAll, findOne, add, update, remove }
+async function findByNameStart(req: Request, res: Response) {
+  try {
+    const { q } = req.query;
+
+    if (!q || typeof q !== "string") {
+      return res.status(400).json({ message: "El parámetro 'q' es requerido" });
+    }
+
+    const categorias = await em.find(
+      Categoria,
+      {
+        $or: [
+          { name: { $like: `${q}%` } },  
+          { description: { $like: `${q}%` } },
+        ]
+      },
+    );
+
+    res.status(200).json({ 
+      message: 'Categorias encontradas', 
+      data: categorias 
+    });
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
+export {findAll, findOne, add, update, remove, findByNameStart }

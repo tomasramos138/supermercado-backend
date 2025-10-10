@@ -143,4 +143,58 @@ async function subirImagenProducto(req: Request, res: Response) {
   });
 }
 
-export { sanitizeProductoInput, findAll, findOne, add, update, remove, countStock, subirImagenProducto, rutaUpload}
+async function findByNameStart(req: Request, res: Response) {
+  try {
+    const { q } = req.query;
+
+    if (!q || typeof q !== "string") {
+      return res.status(400).json({ message: "El parámetro 'q' es requerido" });
+    }
+
+    const productos = await em.find(
+      Producto,
+      {
+        $or: [
+          { name: { $like: `${q}%` } },
+        ]
+      },
+    );
+
+    res.status(200).json({ 
+      message: 'Productos encontrados', 
+      data: productos 
+    });
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
+async function findByCategoriaStart(req: Request, res: Response) {
+  try {
+    const { categoriaId } = req.query;
+
+    if (!categoriaId) {
+      return res.status(400).json({ message: "El parámetro 'categoriaId' es requerido" });
+    }
+
+    const id = parseInt(categoriaId as string);
+    if (isNaN(id)) {
+      return res.status(400).json({ message: "El parámetro 'categoriaId' debe ser un número válido" });
+    }
+
+    const productos = await em.createQueryBuilder(Producto)
+      .select('*')
+      .where({ categoria: id })
+      .leftJoinAndSelect('categoria', 'c')
+      .getResultList();
+
+    res.status(200).json({ 
+      message: 'Productos encontrados', 
+      data: productos 
+    });
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
+export { sanitizeProductoInput, findAll, findOne, add, update, remove, countStock, subirImagenProducto, rutaUpload, findByNameStart, findByCategoriaStart}

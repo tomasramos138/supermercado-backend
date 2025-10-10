@@ -25,7 +25,7 @@ async function findAll(req: Request, res: Response) {
     const zonas = await em.find(
       Zona,
       {},
-      //{ populate: ['clientes', 'distribuidores'] } si quiero traer los clientes y distribuidores asociados a la zona
+      { populate: ['distribuidores'] } //si quiero traer los distribuidores asociados a la zona
     )
     res.status(200).json({ message: 'found all zonas', data: zonas })
   } catch (error: any) {
@@ -82,4 +82,31 @@ async function remove(req: Request, res: Response) {
   }
 }
 
-export { sanitizeZonaInput, findAll, findOne, add, update, remove }
+async function findByNameStart(req: Request, res: Response) {
+  try {
+    const { q } = req.query;
+
+    if (!q || typeof q !== "string") {
+      return res.status(400).json({ message: "El parámetro 'q' es requerido" });
+    }
+
+    const zonas = await em.find(
+      Zona,
+      {
+        $or: [
+          { name: { $like: `${q}%` } },
+        ]
+      },
+      { populate: ['distribuidores'] } 
+    );
+
+    res.status(200).json({ 
+      message: 'Zonas encontradas', 
+      data: zonas 
+    });
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
+export { sanitizeZonaInput, findAll, findOne, add, update, remove, findByNameStart }
