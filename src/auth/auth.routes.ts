@@ -3,6 +3,6 @@ import { authController } from "./auth.controller.js"
 
 export const authRouter = Router()
 
-// Rutas públicas
+// Ambas son rutas publicas (Acceso para clientes sin Registro)
 authRouter.post("/register", authController.register)
 authRouter.post("/login", authController.login)

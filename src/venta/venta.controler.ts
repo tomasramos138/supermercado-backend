@@ -5,11 +5,7 @@ import { Producto } from '../producto/producto.entity.js'
 
 const em = orm.em
 
-function sanitizeVentaInput(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
+function sanitizeVentaInput( req: Request, res: Response, next: NextFunction) {
   req.body.sanitizedInput = {
     fecha: req.body.fecha,
     total: req.body.total,

@@ -21,7 +21,7 @@ class AuthController {
         })
       }
 
-      // Verificar si la zona existe
+      // Verificar si la zona existe (Aunque se selecciona de un listado, es buena práctica verificar)
       console.log("Verificando zona:", zonaId)
       const zona = await em.findOne(Zona, { id: zonaId })
       if (!zona) {
@@ -106,7 +106,6 @@ class AuthController {
       }
 
       // Generar token JWT
-      // estructura general del token: jwt.sign(payload, secret, options)
       const token = jwt.sign(
         {
           id: cliente.id,
@@ -117,7 +116,7 @@ class AuthController {
           zona: cliente.zona ? { id: cliente.zona.id, name: cliente.zona.name } : null,
         }, //payload(información del cliente)
         JWT_SECRET, //Secret(firma del token)
-        { expiresIn: "20m" },//expiresIn(tiempo de expiración del token)
+        { expiresIn: "20m" },//Tieempo de expiración del token, una vez cumplido el tienmo se debera volver a iniciar sesion
       )
 
       res.json({
@@ -129,36 +128,6 @@ class AuthController {
       res.status(500).json({ message: "Error interno del servidor" })
     }
   }
-
-/* async perfil(req: Request, res: Response) {
-    try {
-      const clienteId = (req as any).cliente.id
-      const cliente = await em.findOne(Cliente, { id: clienteId }, { populate: ["zona"] })
-      if (!cliente) {
-        return res.status(404).json({ message: "Cliente no encontrado" })
-      }
-      res.json({
-        cliente: {
-          id: cliente.id,
-          name: cliente.name,
-          apellido: cliente.apellido,
-          usuario: cliente.usuario,
-          dni: cliente.dni,
-          rol: cliente.rol, // Devolver el rol (booleano)
-          zona: cliente.zona
-            ? {
-                id: cliente.zona.id,
-                name: cliente.zona.name,
-                description: cliente.zona.description,
-              }
-            : null,
-        },
-      })
-    } catch (error) {
-      console.error("Error obteniendo perfil:", error)
-      res.status(500).json({ message: "Error interno del servidor" })
-    }
-  }*/
 }
 
 export const authController = new AuthController()

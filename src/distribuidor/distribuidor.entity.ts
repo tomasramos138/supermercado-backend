@@ -1,12 +1,4 @@
-import {
-  Entity,
-  Property,
-  Cascade,
-  ManyToOne,
-  Rel,
-  Collection,
-  OneToMany,
-} from '@mikro-orm/core'
+import { Entity, Property, Cascade, ManyToOne, Rel, Collection, OneToMany, } from '@mikro-orm/core'
 import { BaseEntity } from '../shared/baseEntity.entity.js'
 import { Venta } from '../venta/venta.entity.js'
 import { Zona } from '../zona/zona.entity.js'
