@@ -60,7 +60,7 @@ async function add(req: Request, res: Response) {
         throw new Error(`Stock insuficiente para el producto: ${producto.name}`)
       }
 
-      producto.stock -= cantidad
+      producto.stock -= cantidad // Descuenta el stokc vendido
 
       const subtotal = producto.precio * cantidad
 
