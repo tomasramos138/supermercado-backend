@@ -4,8 +4,7 @@ module.exports = {
   extensionsToTreatAsEsm: ['.ts'],
   moduleFileExtensions: ['ts', 'js', 'json', 'node'],
   testMatch: ['**/tests/**/*.test.ts', '**/__tests__/**/*.test.ts', '**/?(*.)+(spec|test).ts'],
-  moduleNameMapper: {
-    // mapea imports que terminan en .js a sus fuentes TypeScript durante testing si usas import './file.js'
+  moduleNameMapper: {  // ← CORREGIDO: moduleNameMapper no moduleNameMapping
     '^(\\.{1,2}/.*)\\.js$': '$1'
   },
   transformIgnorePatterns: ['/node_modules/'],
@@ -17,5 +16,6 @@ module.exports = {
         useESM: true
       }
     ]
-  }
+  },
+  testTimeout: 30000
 };

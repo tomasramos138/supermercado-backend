@@ -15,7 +15,10 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
-    "test:unit": "jest --runInBand"
+    "test:unit": "jest --runInBand",
+    "test:integration": "jest tests/integration --verbose --forceExit",
+    "test:login": "jest tests/integration/auth-login.test.ts --verbose --forceExit",
+    "dev:test": "npm run dev & sleep 3 && npm run test:login"
   },
   "keywords": [],
   "author": "",
