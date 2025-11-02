@@ -11,6 +11,7 @@
     "create-db": "mikro-orm schema:create",
     "refresh-db": "mikro-orm schema:refresh",
     "build": "tsc -p ./tsconfig.json",
+    "clean:build": "npm run clean && npm run build",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
