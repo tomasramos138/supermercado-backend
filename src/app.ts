@@ -1,3 +1,6 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
 import 'reflect-metadata'
 import express from 'express';
 import { orm, syncSchema } from './shared/orm.js';
@@ -11,6 +14,7 @@ import { ZonaRouter } from './zona/zona.rout.js';
 import { VentaRouter } from './venta/venta.rout.js';
 import { ItemVentaRouter } from './item-venta/item.rout.js';
 import { authRouter } from './auth/auth.routes.js';
+import { mercadoPagoRouter } from './mercadopago/mercadopago.routes.js';
 
 const app = express()
 app.use(express.json())
@@ -29,6 +33,8 @@ app.use('/api/zona', ZonaRouter)
 app.use('/api/categoria', CategoriaRouter)
 app.use('/api/venta', VentaRouter)
 app.use('/api/item-venta', ItemVentaRouter)
+app.use ('/api/mercadopago', mercadoPagoRouter)
+
 app.use((_, res) => {
   return res.status(404).send({ message: 'Resource not found' })
 })

@@ -1,0 +1,11 @@
+### Crear preferencia de pago
+POST http://localhost:3000/api/mercadopago/create-preference
+Content-Type: application/json
+
+
+{
+ "items": [
+   { "title": "Fideos", "quantity": 1, "price": 800 },
+   { "title": "Carne Vacío", "quantity": 2, "price": 10000 }
+ ]
+}
