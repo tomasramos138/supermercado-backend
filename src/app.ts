@@ -6,7 +6,7 @@ import express from 'express';
 import { orm, syncSchema } from './shared/orm.js';
 import { RequestContext } from '@mikro-orm/core';
 import cors from 'cors' //para que el navegador no bloquee las peticiones
-import { productoRouter } from './producto/producto.rout.js';
+import { productoRouter } from './producto/producto.route.js';
 import { CategoriaRouter } from './categoria.prod/categoria.rout.js';
 import { clienteRouter } from './cliente/cliente.routes.js';
 import { distribuidorRouter } from './distribuidor/distribuidor.rout.js';
