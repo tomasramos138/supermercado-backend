@@ -9,3 +9,14 @@ Content-Type: application/json
    { "title": "Carne Vacío", "quantity": 2, "price": 10000 }
  ]
 }
+
+
+
+### Verificar pago manualmente
+POST http://localhost:3000/api/mercadopago/success
+Content-Type: application/json
+
+
+{
+ "payment_id": "1234567890"
+}

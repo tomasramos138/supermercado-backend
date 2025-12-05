@@ -13,6 +13,8 @@ function sanitizeVentaInput( req: Request, res: Response, next: NextFunction) {
     itemsVenta: req.body.itemsVenta,
     distribuidor: req.body.distribuidor,
     cliente: req.body.cliente,
+    estado: req.body.estado,
+    pagoId: req.body.pagoId,
   }
 
   Object.keys(req.body.sanitizedInput).forEach((key) => {
@@ -129,6 +131,8 @@ async function procesarCompra(req: Request, res: Response) {
         total: 0, // Se calculará después
         cliente: cliente,
         distribuidor: distribuidor || null,
+        estado: req.body.estado,
+        pagoId: req.body.pagoId,
       });
 
       await em.persistAndFlush(venta);

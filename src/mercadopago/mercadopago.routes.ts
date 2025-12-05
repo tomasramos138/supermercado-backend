@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { createPreference } from "./mercadopago.controller.js";
+import { createPreference, verifyPayment } from "./mercadopago.controller.js";
 
-const mercadoPagoRouter = Router();
+export const mercadoPagoRouter = Router();
 
 mercadoPagoRouter.post("/create-preference", createPreference);
 
-export { mercadoPagoRouter };
+mercadoPagoRouter.post('/success', verifyPayment);

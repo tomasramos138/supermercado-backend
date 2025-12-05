@@ -22,5 +22,11 @@ export class Venta extends BaseEntity {
   distribuidor!: Distribuidor
 
   @ManyToOne(() => Cliente, { nullable: false })
-  cliente!: Distribuidor
+  cliente!: Cliente
+
+  @Property({ default: 'pendiente'})
+  estado!: string
+
+  @Property({ nullable: true })
+  pagoId?: string;
 }

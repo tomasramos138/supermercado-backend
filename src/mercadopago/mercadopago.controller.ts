@@ -1,47 +1,154 @@
-import { MercadoPagoConfig, Preference } from "mercadopago";
+import { MercadoPagoConfig, Preference, Payment } from "mercadopago";
 import { Request, Response } from "express";
 import "dotenv/config";
+import { orm } from '../shared/orm.js'
+import { Producto } from '../producto/producto.entity.js'
+import { Venta } from "../venta/venta.entity.js";
+import { ItemVenta } from "../item-venta/item.entity.js";
+import { Cliente } from "../cliente/cliente.entity.js";
+import { Distribuidor } from "../distribuidor/distribuidor.entity.js";
 
-// Crear una configuración global
+const em = orm.em;
+
 const client = new MercadoPagoConfig({
-  accessToken: process.env.MP_ACCESS_TOKEN as string,
+  accessToken: process.env.MP_ACCESS_TOKEN_SANDBOX as string,
 });
 
 export const createPreference = async (req: Request, res: Response) => {
+  const em = orm.em.fork();
+  
   try {
-    const items = req.body.items;
+    const { items, clienteId, distribuidorId } = req.body;
 
-    console.log("Items recibidos:", items);
+    // Validaciones básicas
+    if (!items?.length) return res.status(400).json({ error: "Carrito vacío" });
+    if (!clienteId) return res.status(400).json({ error: "Falta cliente" });
+    if (!distribuidorId) return res.status(400).json({ error: "Falta distribuidor" });
 
-    // Crear instancia de Preference
+    let ventaId = 0;
+
+    await em.transactional(async (em) => {
+      // Verificar cliente y distribuidor
+      const cliente = await em.findOneOrFail(Cliente, { id: clienteId });
+      const distribuidor = await em.findOneOrFail(Distribuidor, { id: distribuidorId });
+
+      // Verificar stock
+      for (const item of items) {
+        const producto = await em.findOneOrFail(Producto, { id: item.id });
+        if (producto.stock < item.quantity) {
+          throw new Error(`Sin stock: ${producto.name} (Stock: ${producto.stock}, Solicitado: ${item.quantity})`);
+        }
+      }
+
+      // Crear venta
+      const venta = em.create(Venta, {
+        fecha: new Date(),
+        total: 0,
+        estado: "pendiente",
+        cliente,
+        distribuidor,
+      });
+      await em.persistAndFlush(venta);
+
+
+      if (!venta.id) {
+        throw new Error("No se pudo obtener el ID de la venta");
+      }
+      // Guardar ID inmediatamente
+      ventaId = venta.id;
+
+      // Crear items y descontar stock
+      let total = 0;
+      for (const item of items) {
+        const producto = await em.findOneOrFail(Producto, { id: item.id });
+        
+        // Descontar stock
+        producto.stock -= item.quantity;
+        
+        const subtotal = producto.precio * item.quantity;
+        total += subtotal;
+
+        em.create(ItemVenta, {
+          cantidad: item.quantity,
+          precio: producto.precio,
+          subtotal,
+          producto,
+          venta,
+        });
+        
+        await em.persist(producto); // Guardar cambio de stock
+      }
+
+      // Actualizar total de venta
+      venta.total = total;
+      
+      await em.flush();
+    });
+
+    // Crear preferencia MP usando SOLO el ID de la venta
     const preference = new Preference(client);
-
-    // Crear preferencia de pago
     const result = await preference.create({
       body: {
         items: items.map((item: any) => ({
-          title: item.title,
-          quantity: item.quantity,
-          unit_price: item.price,
+          title: item.name,
+          quantity: Number(item.quantity),
+          unit_price: Number(item.precio),
+          currency_id: "ARS",
         })),
         back_urls: {
-          success: "http://localhost:5173/success",
-          failure: "http://localhost:5173/failure",
-          pending: "http://localhost:5173/pending",
+          success: `http://localhost:3000/api/mercadopago/success`,
+          failure: `http://localhost:3000/api/mercadopago/failure`,
+          pending: `http://localhost:3000/api/mercadopago/pending`,
         },
-      //  auto_return: "approved",
+        external_reference: ventaId.toString(), // <-- SOLO EL ID: "123"
+        //auto_return: "approved",
       },
     });
 
-    return res.status(200).json({
+    res.json({
+      success: true,
       id: result.id,
       init_point: result.init_point,
-      sandbox_init_point: result.sandbox_init_point,
+      ventaId,
     });
+
   } catch (error: any) {
-    console.error("Error creando preferencia:", error);
-    return res
-      .status(500)
-      .json({ error: error.message || "Error interno al crear la preferencia" });
+    console.error("Error en createPreference:", error);
+    res.status(500).json({ 
+      success: false,
+      error: error.message 
+    });
+  }
+};
+
+
+export const verifyPayment = async (req: Request, res: Response) => {
+  const em = orm.em.fork();
+  
+  const { collection_status, payment_id, external_reference } = req.query;
+  const frontendUrl = "http://localhost:5173";
+  const ventaId = external_reference ? parseInt(external_reference as string) : 0;
+  
+  if (collection_status === "approved") {
+    // Aprobado
+    const venta = await em.findOne(Venta, { id: ventaId });
+    if (venta) {
+      venta.estado = "pagada";
+      venta.pagoId = payment_id as string;
+      await em.flush();
+    }
+    res.redirect(`${frontendUrl}/success?payment_id=${payment_id}`);
+  } else {
+    // Rechazado
+    const venta = await em.findOne(Venta, { id: ventaId });
+    if (venta) {
+      const items = await em.find(ItemVenta, { venta: ventaId }, { populate: ['producto'] });
+      for (const item of items) {
+        item.producto.stock += item.cantidad;
+      }
+      venta.estado = "cancelada";
+      await em.flush();
+    }
+    res.redirect(`${frontendUrl}/failure?payment_id=${payment_id}`);
   }
 };

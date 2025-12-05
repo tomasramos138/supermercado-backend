@@ -72,13 +72,82 @@ async function update(req: Request, res: Response) {
 }
 
 async function remove(req: Request, res: Response) {
+  let em = orm.em.fork(); // Usar un EntityManager fork para transacciones
+  await em.begin(); // Iniciar transacción
+
   try {
     const id = Number.parseInt(req.params.id)
-    const zona = em.getReference(Zona, id)
-    await em.removeAndFlush(zona)
-    res.status(200).json({ message: 'zona deleted', data: zona })
+    
+    // Obtener la zona con TODAS sus relaciones
+    const zona = await em.findOne(
+      Zona, 
+      { id },
+      { populate: ['clientes', 'distribuidores'] }
+    )
+    
+    if (!zona) {
+      await em.rollback();
+      return res.status(404).json({ message: 'Zona no encontrada' })
+    }
+    
+    // Verificar si la zona tiene clientes asociados
+    if (zona.clientes.length > 0) {
+      await em.rollback();
+      return res.status(400).json({ 
+        message: 'No se puede eliminar la zona porque tiene clientes asociados',
+        data: {
+          id: zona.id,
+          name: zona.name,
+          clientesCount: zona.clientes.length,
+          detalles: zona.clientes.getItems().map(c => ({ id: c.id, nombre: c.name || c.name }))
+        }
+      })
+    }
+    
+    // Si no hay clientes, eliminamos todos los distribuidores primero
+    if (zona.distribuidores.length > 0) {
+      // OPCIÓN 1: Eliminar uno por uno
+      for (const distribuidor of zona.distribuidores) {
+        await em.remove(distribuidor);
+      }
+      
+      // OPCIÓN 2: Si quieres eliminarlos en lote (más eficiente)
+      // await em.remove(zona.distribuidores.getItems());
+      
+      console.log(`Eliminados ${zona.distribuidores.length} distribuidores de la zona ${zona.name}`);
+    }
+    
+    // Finalmente eliminamos la zona
+    await em.removeAndFlush(zona);
+    await em.commit(); // Confirmar transacción
+    
+    res.status(200).json({ 
+      message: 'Zona eliminada correctamente' + 
+               (zona.distribuidores.length > 0 ? ` junto con ${zona.distribuidores.length} distribuidores` : ''),
+      data: {
+        zonaEliminada: {
+          id: zona.id,
+          name: zona.name
+        },
+        distribuidoresEliminados: zona.distribuidores.length
+      }
+    })
+    
   } catch (error: any) {
-    res.status(500).json({ message: error.message })
+    await em.rollback(); // Revertir en caso de error
+    
+    // Manejo de errores específicos
+    if (error.code === '23503' || error.message.includes('foreign key constraint')) {
+      return res.status(400).json({ 
+        message: 'Error de integridad referencial. La zona podría tener relaciones activas.',
+        error: error.message
+      })
+    }
+    
+    res.status(500).json({ 
+      message: 'Error al eliminar la zona', 
+      error: error.message 
+    })
   }
 }
 

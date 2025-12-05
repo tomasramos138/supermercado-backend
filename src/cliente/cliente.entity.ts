@@ -21,7 +21,7 @@ export class Cliente extends BaseEntity {
   contraseña!: string
 
   @Property({ nullable: false })
-  rol!: boolean // true = admin, false = cliente
+  rol!: string // 'admin', 'usuario'
 
   @OneToMany(() => Venta, (venta) => venta.cliente, {
     cascade: [Cascade.ALL],

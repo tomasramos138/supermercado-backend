@@ -59,9 +59,9 @@ class AuthController {
       nuevoCliente.dni = dni
       nuevoCliente.usuario = usuario
       nuevoCliente.contraseña = hashedPassword
-      nuevoCliente.rol = false //Se establece el rol por defecto como falso
+      nuevoCliente.rol = 'usuario' //Se establece el rol por defecto como falso
       nuevoCliente.zona = zona
-
+      
       await em.persistAndFlush(nuevoCliente)
 
 
@@ -131,3 +131,4 @@ class AuthController {
 }
 
 export const authController = new AuthController()
+
