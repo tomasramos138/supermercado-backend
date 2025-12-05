@@ -100,7 +100,7 @@ export const createPreference = async (req: Request, res: Response) => {
           failure: `${process.env.BACK_URL}/api/mercadopago/failure`,
           pending: `${process.env.BACK_URL}/api/mercadopago/pending`,
         },
-        external_reference: ventaId.toString(), // <-- SOLO EL ID: "123"
+        external_reference: ventaId.toString(),
         //auto_return: "approved",
       },
     });
@@ -122,11 +122,11 @@ export const createPreference = async (req: Request, res: Response) => {
 };
 
 
-export const verifyPayment = async (req: Request, res: Response) => {
+export const verifyPayment = async (req: Request) => {
   const em = orm.em.fork();
   
   const { collection_status, payment_id, external_reference } = req.query;
-  const frontendUrl = "http://localhost:5173";
+  const frontendUrl = "https://supermercado-front-js-main.vercel.app";
   const ventaId = external_reference ? parseInt(external_reference as string) : 0;
   
   if (collection_status === "approved") {
@@ -137,7 +137,7 @@ export const verifyPayment = async (req: Request, res: Response) => {
       venta.pagoId = payment_id as string;
       await em.flush();
     }
-    res.redirect(`${frontendUrl}/success?payment_id=${payment_id}`);
+    //res.redirect(`${frontendUrl}/success?payment_id=${payment_id}`);
   } else {
     // Rechazado
     const venta = await em.findOne(Venta, { id: ventaId });
@@ -149,6 +149,6 @@ export const verifyPayment = async (req: Request, res: Response) => {
       venta.estado = "cancelada";
       await em.flush();
     }
-    res.redirect(`${frontendUrl}/failure?payment_id=${payment_id}`);
+    //res.redirect(`${frontendUrl}/failure?payment_id=${payment_id}`);
   }
 };
