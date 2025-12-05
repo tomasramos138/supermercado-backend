@@ -96,9 +96,9 @@ export const createPreference = async (req: Request, res: Response) => {
           currency_id: "ARS",
         })),
         back_urls: {
-          success: `http://localhost:3000/api/mercadopago/success`,
-          failure: `http://localhost:3000/api/mercadopago/failure`,
-          pending: `http://localhost:3000/api/mercadopago/pending`,
+          success: `${process.env.BACK_URL}/api/mercadopago/success`,
+          failure: `${process.env.BACK_URL}/api/mercadopago/failure`,
+          pending: `${process.env.BACK_URL}/api/mercadopago/pending`,
         },
         external_reference: ventaId.toString(), // <-- SOLO EL ID: "123"
         //auto_return: "approved",
