@@ -13,9 +13,4 @@ Content-Type: application/json
 
 
 ### Verificar pago manualmente
-POST https://supermercado-backend-production.up.railway.app/api/mercadopago/success
-Content-Type: application/json
-
-{
- "ventaId": 10
-}
+Get https://supermercado-backend-production.up.railway.app/api/mercadopago/success/71

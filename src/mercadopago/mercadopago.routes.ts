@@ -5,4 +5,4 @@ export const mercadoPagoRouter = Router();
 
 mercadoPagoRouter.post("/create-preference", createPreference);
 
-mercadoPagoRouter.post('/success', verifyPayment);
+mercadoPagoRouter.get('/success', verifyPayment);
