@@ -20,23 +20,24 @@ export const createPreference = async (req: Request, res: Response) => {
   try {
     const { items, clienteId, distribuidorId } = req.body;
 
-    // Validaciones básicas
+    // Validaciones
     if (!items?.length) return res.status(400).json({ error: "Carrito vacío" });
     if (!clienteId) return res.status(400).json({ error: "Falta cliente" });
     if (!distribuidorId) return res.status(400).json({ error: "Falta distribuidor" });
 
     let ventaId = 0;
+    let costoEntrega = 0;
 
     await em.transactional(async (em) => {
-      // Verificar cliente y distribuidor
-      const cliente = await em.findOneOrFail(Cliente, { id: clienteId });
+      // Obtener distribuidor para costo de entrega
       const distribuidor = await em.findOneOrFail(Distribuidor, { id: distribuidorId });
+      costoEntrega = distribuidor.valorEntrega;
 
       // Verificar stock
       for (const item of items) {
         const producto = await em.findOneOrFail(Producto, { id: item.id });
         if (producto.stock < item.quantity) {
-          throw new Error(`Sin stock: ${producto.name} (Stock: ${producto.stock}, Solicitado: ${item.quantity})`);
+          throw new Error(`Sin stock: ${producto.name}`);
         }
       }
 
@@ -45,16 +46,12 @@ export const createPreference = async (req: Request, res: Response) => {
         fecha: new Date(),
         total: 0,
         estado: "pendiente",
-        cliente,
+        cliente: await em.findOneOrFail(Cliente, { id: clienteId }),
         distribuidor,
       });
       await em.persistAndFlush(venta);
 
-
-      if (!venta.id) {
-        throw new Error("No se pudo obtener el ID de la venta");
-      }
-      // Guardar ID inmediatamente
+      if (!venta.id) throw new Error("Error al crear la venta");
       ventaId = venta.id;
 
       // Crear items y descontar stock
@@ -75,26 +72,44 @@ export const createPreference = async (req: Request, res: Response) => {
           producto,
           venta,
         });
-        
-        await em.persist(producto); // Guardar cambio de stock
       }
 
-      // Actualizar total de venta
+      // Guardar total
       venta.total = total;
-      
       await em.flush();
     });
 
-    // Crear preferencia MP usando SOLO el ID de la venta
+    // Crear items para MercadoPago (con costo de entrega)
+    const mpItems = [];
+
+    // Agregar productos
+    for (const item of items) {
+      const producto = await em.findOne(Producto, { id: item.id });
+      mpItems.push({
+        id: item.id.toString(), // Agregar id requerido
+        title: producto?.name || `Producto ${item.id}`,
+        quantity: Number(item.quantity),
+        unit_price: Number(item.precio),
+        currency_id: "ARS",
+      });
+    }
+
+    // Agregar costo de entrega
+    if (costoEntrega > 0) {
+      mpItems.push({
+        id: "entrega_distribuidor", // Agregar id para el costo de entrega
+        title: "Costo de entrega",
+        quantity: 1,
+        unit_price: Number(costoEntrega),
+        currency_id: "ARS",
+      });
+    }
+
+    // Crear preferencia MP
     const preference = new Preference(client);
     const result = await preference.create({
       body: {
-        items: items.map((item: any) => ({
-          title: item.name,
-          quantity: Number(item.quantity),
-          unit_price: Number(item.precio),
-          currency_id: "ARS",
-        })),
+        items: mpItems,
         back_urls: {
           success: `${process.env.BACK_URL}/api/mercadopago/success`,
           failure: `${process.env.BACK_URL}/api/mercadopago/failure`,
@@ -113,7 +128,7 @@ export const createPreference = async (req: Request, res: Response) => {
     });
 
   } catch (error: any) {
-    console.error("Error en createPreference:", error);
+    console.error("Error:", error);
     res.status(500).json({ 
       success: false,
       error: error.message 
@@ -137,7 +152,7 @@ export const verifyPayment = async (req: Request, res: Response) => {
       venta.pagoId = payment_id as string;
       await em.flush();
     }
-     res.redirect(`${frontendUrl}/payment/success?payment_id=${payment_id}&venta_id=${ventaId}`);
+     res.redirect(`${frontendUrl}/payment/success?venta_id=${ventaId}`);
   } else {
     // Rechazado
     const venta = await em.findOne(Venta, { id: ventaId });
@@ -150,6 +165,6 @@ export const verifyPayment = async (req: Request, res: Response) => {
       await em.flush();
     }
     const reason = collection_status || 'failed';
-    res.redirect(`${frontendUrl}/payment/failure?payment_id=${payment_id}&venta_id=${ventaId}&reason=${reason}`);
+    res.redirect(`${frontendUrl}/payment/failure?&venta_id=${ventaId}`);
   }
 };
