@@ -101,7 +101,7 @@ export const createPreference = async (req: Request, res: Response) => {
           pending: `${process.env.BACK_URL}/api/mercadopago/pending`,
         },
         external_reference: ventaId.toString(),
-        //auto_return: "approved",
+        auto_return: "approved",
       },
     });
 
@@ -122,7 +122,7 @@ export const createPreference = async (req: Request, res: Response) => {
 };
 
 
-export const verifyPayment = async (req: Request) => {
+export const verifyPayment = async (req: Request, res: Response) => {
   const em = orm.em.fork();
   
   const { collection_status, payment_id, external_reference } = req.query;
@@ -137,7 +137,7 @@ export const verifyPayment = async (req: Request) => {
       venta.pagoId = payment_id as string;
       await em.flush();
     }
-    //res.redirect(`${frontendUrl}/success?payment_id=${payment_id}`);
+    res.redirect(`${frontendUrl}/success?payment_id=${payment_id}`);
   } else {
     // Rechazado
     const venta = await em.findOne(Venta, { id: ventaId });
@@ -149,6 +149,6 @@ export const verifyPayment = async (req: Request) => {
       venta.estado = "cancelada";
       await em.flush();
     }
-    //res.redirect(`${frontendUrl}/failure?payment_id=${payment_id}`);
+    res.redirect(`${frontendUrl}/failure?payment_id=${payment_id}`);
   }
 };
