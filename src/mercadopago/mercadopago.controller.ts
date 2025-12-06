@@ -137,7 +137,7 @@ export const verifyPayment = async (req: Request, res: Response) => {
       venta.pagoId = payment_id as string;
       await em.flush();
     }
-    res.redirect(`${frontendUrl}/success?payment_id=${payment_id}`);
+     res.redirect(`${frontendUrl}/payment/success?payment_id=${payment_id}&venta_id=${ventaId}`);
   } else {
     // Rechazado
     const venta = await em.findOne(Venta, { id: ventaId });
@@ -149,6 +149,7 @@ export const verifyPayment = async (req: Request, res: Response) => {
       venta.estado = "cancelada";
       await em.flush();
     }
-    res.redirect(`${frontendUrl}/failure?payment_id=${payment_id}`);
+    const reason = collection_status || 'failed';
+    res.redirect(`${frontendUrl}/payment/failure?payment_id=${payment_id}&venta_id=${ventaId}&reason=${reason}`);
   }
 };
