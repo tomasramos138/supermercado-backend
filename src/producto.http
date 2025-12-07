@@ -36,8 +36,8 @@ PATCH http://localhost:3000/api/producto/1
 Content-Type: application/json
 
 {
-"estado":true
+"imagen":"https://supermercado-backend-production.up.railway.app/public/imagenes/vacio.png"
 }
 
 ### borrar un Productos
-DELETE http://localhost:3000/api/producto/a02b91bc-3769-4221-beb1-d7a3aeba7dad
+DELETE http://localhost:3000/api/producto/1

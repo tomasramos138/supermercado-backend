@@ -5,7 +5,8 @@ import 'reflect-metadata'
 import express from 'express';
 import { orm, syncSchema } from './shared/orm.js';
 import { RequestContext } from '@mikro-orm/core';
-import cors from 'cors' //para que el navegador no bloquee las peticiones
+import cors from 'cors';   
+import path from 'path';  
 import { productoRouter } from './producto/producto.route.js';
 import { CategoriaRouter } from './categoria.prod/categoria.rout.js';
 import { clienteRouter } from './cliente/cliente.routes.js';
@@ -15,6 +16,8 @@ import { VentaRouter } from './venta/venta.rout.js';
 import { ItemVentaRouter } from './item-venta/item.rout.js';
 import { authRouter } from './auth/auth.routes.js';
 import { mercadoPagoRouter } from './mercadopago/mercadopago.routes.js';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 
 const app = express()
 app.use(express.json())
@@ -22,8 +25,15 @@ app.use(express.json())
 app.use((req, res, next) => {
   RequestContext.create(orm.em, next)
 })
-
 app.use(cors());
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+//Esto permite servir archivos estáticos desde la carpeta "public"
+app.use('/public', express.static(path.join(process.cwd(), 'public')));
+app.use('/public', express.static(path.join(__dirname, '..', 'public')));
+
 
 app.use("/api/auth", authRouter)
 app.use('/api/cliente', clienteRouter)
