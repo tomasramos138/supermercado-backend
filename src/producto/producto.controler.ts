@@ -3,12 +3,13 @@ import { orm } from '../shared/orm.js'
 import { Producto } from './producto.entity.js'
 import multer from 'multer';
 import fs from 'fs';
-
+import path from 'path';
 const em = orm.em
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    const uploadPath = '../deploy/supermercado-front-js-main(4)/supermercado-front-js/public/imagenes/';
+    console.log('Configurando destino de subida de archivo...');
+    const uploadPath = path.join(process.cwd(), 'public', 'imagenes');
     // Crear directorio si no existe
     if (!fs.existsSync(uploadPath)) {
       fs.mkdirSync(uploadPath, { recursive: true });
