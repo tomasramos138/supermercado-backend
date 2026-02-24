@@ -141,7 +141,8 @@ export const verifyPayment = async (req: Request, res: Response) => {
   const em = orm.em.fork();
   
   const { collection_status, payment_id, external_reference } = req.query;
-  const frontendUrl = "https://supermercado-front-js-main.vercel.app";
+  //const frontendUrl = "https://supermercado-front-js-main.vercel.app";
+  const frontendUrl = "http://localhost:5173";
   const ventaId = external_reference ? parseInt(external_reference as string) : 0;
   
   if (collection_status === "approved") {
