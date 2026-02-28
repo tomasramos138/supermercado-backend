@@ -17,8 +17,8 @@ const storage = multer.diskStorage({
     cb(null, uploadPath);
   },
   filename: function (req, file, cb) {
-  const uniqueName = Date.now() + "-" + file.originalname;
-  cb(null, uniqueName);
+    // Guardar directamente con el nombre original
+    cb(null, file.originalname);
   }
 });
 
@@ -140,7 +140,7 @@ async function subirImagenProducto(req: Request, res: Response) {
   console.log('Imagen guardada correctamente');
   res.json({ 
     message: 'Imagen subida correctamente',
-    filename: req.file.filename
+    filename: req.file.originalname 
   });
 }
 
