@@ -139,33 +139,33 @@ export const createPreference = async (req: Request, res: Response) => {
 
 export const verifyPayment = async (req: Request, res: Response) => {
   const em = orm.em.fork();
-  
-  const { collection_status, payment_id, external_reference } = req.query;
-  //const frontendUrl = "https://supermercado-front-js-main.vercel.app";
-  const frontendUrl = "http://localhost:5173";
-  const ventaId = external_reference ? parseInt(external_reference as string) : 0;
-  
-  if (collection_status === "approved") {
-    // Aprobado
-    const venta = await em.findOne(Venta, { id: ventaId });
-    if (venta) {
-      venta.estado = "pagada";
-      venta.pagoId = payment_id as string;
-      await em.flush();
-    }
-     res.redirect(`${frontendUrl}/payment/success?venta_id=${ventaId}`);
-  } else {
-    // Rechazado
-    const venta = await em.findOne(Venta, { id: ventaId });
-    if (venta) {
-      const items = await em.find(ItemVenta, { venta: ventaId }, { populate: ['producto'] });
-      for (const item of items) {
-        item.producto.stock += item.cantidad;
-      }
-      venta.estado = "cancelada";
-      await em.flush();
-    }
-    const reason = collection_status || 'failed';
-    res.redirect(`${frontendUrl}/payment/failure?&venta_id=${ventaId}`);
+  const { payment_id, external_reference } = req.query;
+  const frontendUrl = process.env.FRONT_URL as string;
+
+  if (!payment_id) {
+    return res.redirect(`${frontendUrl}/payment/failure`);
   }
+
+  const payment = new Payment(client);
+  const paymentInfo = await payment.get({
+    id: payment_id as string,
+  });
+
+  const ventaId = parseInt(external_reference as string);
+
+  const venta = await em.findOne(Venta, { id: ventaId });
+  if (!venta) {
+    return res.redirect(`${frontendUrl}/payment/failure`);
+  }
+
+  if (paymentInfo.status === "approved") {
+    venta.estado = "pagada";
+    venta.pagoId = payment_id as string;
+  } else {
+    venta.estado = "cancelada";
+  }
+
+  await em.flush();
+
+  res.redirect(`${frontendUrl}/payment/${paymentInfo.status}?venta_id=${ventaId}`);
 };
