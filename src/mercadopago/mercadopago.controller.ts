@@ -167,5 +167,5 @@ export const verifyPayment = async (req: Request, res: Response) => {
 
   await em.flush();
 
-  res.redirect(`${frontendUrl}/payment/${paymentInfo.status}?venta_id=${ventaId}`);
+  res.redirect(`${frontendUrl}/payment/success?venta_id=${ventaId}`);
 };
