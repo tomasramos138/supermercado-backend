@@ -3,7 +3,7 @@
 ## Requisitos
 - Node.js (v18 o superior)
 - pnpm (v10.9.0 o superior)
-- Instancia de MongoDB
+
 
 ---
 
