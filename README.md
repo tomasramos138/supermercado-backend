@@ -76,7 +76,5 @@ http://localhost:3000
 - `pnpm start:dev` → Iniciar servidor con recarga automática
 - `pnpm start:prod` → Iniciar servidor de producción
 - `pnpm build` → Compilar TypeScript a JavaScript
-- `pnpm lint` → Ejecutar ESLint
 - `pnpm test` → Ejecutar todas las pruebas
 - `pnpm test:coverage` → Ejecutar pruebas con reporte de cobertura
-- `pnpm tdocs` → Generar documentación TypeScript
