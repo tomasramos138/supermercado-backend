@@ -22,7 +22,7 @@ import { dirname } from 'path';
 const app = express()
 
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+  origin: process.env.FRONT_URL || 'http://localhost:5173',
   allowedHeaders: ['Authorization', 'Content-Type'],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH' ,'OPTIONS'],
   credentials: true
