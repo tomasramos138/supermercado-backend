@@ -26,11 +26,13 @@ export const authMiddleware = (
 
   try {
     // Verifica el token con la librería jsonwebtoken
+    console.log('JWT_SECRET defined:', !!process.env.JWT_SECRET);
     const decoded = jwt.verify(token, process.env.JWT_SECRET!);
     (req as any).user = decoded;
     
     next();
   } catch (error) {
+    console.log('JWT error:', error);
     return res.status(401).json({ message: 'Token invÃ¡lido o expirado' });
   }
 };
