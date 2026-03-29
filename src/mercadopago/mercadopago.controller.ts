@@ -137,13 +137,51 @@ export const createPreference = async (req: Request, res: Response) => {
 };
 
 
-export const verifyPayment = async (req: Request, res: Response) => {
+export const verifyFailure = async (req: Request, res: Response) => {
+  const em = orm.em.fork();
+  const { external_reference } = req.query;
+  const frontendUrl = process.env.FRONT_URL as string;
+  
+  try {
+    const ventaId = parseInt(external_reference as string);
+    
+    if (ventaId) {
+      const venta = await em.findOne(Venta, { id: ventaId });
+      
+      if (venta && venta.estado === "pendiente") {
+        await em.transactional(async (em) => {
+          // Cambiar estado a cancelada
+          venta.estado = "cancelada";
+          
+          // Obtener los items de la venta
+          const itemsVenta = await em.find(ItemVenta, { venta: { id: ventaId } });
+          
+          // Reponer el stock de cada producto
+          for (const item of itemsVenta) {
+            const producto = await em.findOne(Producto, { id: item.producto.id });
+            if (producto) {
+              producto.stock += item.cantidad;
+            }
+          }
+          
+          await em.flush();
+        });
+      }
+    }
+  } catch (error) {
+    console.error("Error en verifyFailure:", error);
+  }
+  
+  return res.redirect(`${frontendUrl}/payment/failure`);
+};
+
+export const verifySucces = async (req: Request, res: Response) => {
   const em = orm.em.fork();
   const { payment_id, external_reference } = req.query;
   const frontendUrl = process.env.FRONT_URL as string;
 
   if (!payment_id) {
-    return res.redirect(`${frontendUrl}/payment/failure`);
+    return await verifyFailure(req, res);
   }
 
   const payment = new Payment(client);
@@ -155,17 +193,16 @@ export const verifyPayment = async (req: Request, res: Response) => {
 
   const venta = await em.findOne(Venta, { id: ventaId });
   if (!venta) {
-    return res.redirect(`${frontendUrl}/payment/failure`);
+    return await verifyFailure(req, res);
   }
 
   if (paymentInfo.status === "approved") {
     venta.estado = "pagada";
     venta.pagoId = payment_id as string;
+    await em.flush();
+    return res.redirect(`${frontendUrl}/payment/success?venta_id=${ventaId}`);
   } else {
-    venta.estado = "cancelada";
+    return await verifyFailure(req, res);
   }
-
-  await em.flush();
-
-  res.redirect(`${frontendUrl}/payment/success?venta_id=${ventaId}`);
 };
+

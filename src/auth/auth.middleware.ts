@@ -10,18 +10,14 @@ export const authMiddleware = (
   req: Request,
   res: Response,
   next: NextFunction
-) => {
-  // Get authorization header
-  const authHeader = req.headers['authorization'];
+) => {const authHeader = req.headers['authorization'];
 
-  // Check if header exists and has correct format
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return res.status(401).json({ 
       message: 'Token no proporcionado o formato incorrecto' 
     });
   }
-
-  // Extract token
+  //Extrae el token del header
   const token = authHeader.split(' ')[1];
 
   if (!token) {
@@ -29,10 +25,8 @@ export const authMiddleware = (
   }
 
   try {
-    // Verify token
+    // Verifica el token con la librería jsonwebtoken
     const decoded = jwt.verify(token, process.env.JWT_SECRET!);
-    
-    // Attach user info to request
     (req as any).user = decoded;
     
     next();
