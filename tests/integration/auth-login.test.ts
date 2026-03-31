@@ -5,6 +5,7 @@ const BASE_URL = 'http://localhost:3000';
 
 describe('Auth Login API - Integration Test', () => {
   describe('POST /api/auth/login', () => {
+    
     // Test 1: Credenciales faltantes
     it('should return 400 for missing credentials', async () => {
       const response = await request(BASE_URL)
@@ -39,7 +40,19 @@ describe('Auth Login API - Integration Test', () => {
       expect(response.body.message).toBe('Usuario y contraseña son requeridos');
     });
 
-    // Test 4: Credenciales inválidas
+    // Test 4: Formato de request incorrecto
+    it('should return proper error for invalid request format', async () => {
+      const response = await request(BASE_URL)
+        .post('/api/auth/login')
+        .send({
+          email: 'test@test.com', // campos incorrecto
+          password: '123' 
+        });
+
+      expect(response.status).toBe(400);
+    });
+
+    // Test 5: Credenciales inválidas
     it('should return 401 for invalid credentials', async () => {
       const response = await request(BASE_URL)
         .post('/api/auth/login')
@@ -52,19 +65,33 @@ describe('Auth Login API - Integration Test', () => {
       expect(response.body.message).toBe('Credenciales inválidas');
     });
 
-    // Test 5: Formato de request incorrecto
-    it('should return proper error for invalid request format', async () => {
+    // Test 6: Caso con espacios en blanco 
+    it('should handle empty strings in credentials', async () => {
       const response = await request(BASE_URL)
         .post('/api/auth/login')
         .send({
-          email: 'test@test.com', // campos incorrecto
-          password: '123' 
+          usuario: '   ',
+          contraseña: '   '
         });
 
-      expect(response.status).toBe(400);
+      expect(response.status).toBe(401);
+      expect(response.body.message).toBe('Credenciales inválidas');
     });
 
-    // Test 6: Login exitoso con usuario existente
+    // Test 7: Contraseña incorrecta para usuario existente
+    it('should return 401 for correct usuario but wrong contraseña', async () => {
+      const response = await request(BASE_URL)
+        .post('/api/auth/login')
+        .send({
+          usuario: 'usuariodeprueba@gmail.com',
+          contraseña: 'contraseña_incorrecta'
+        });
+
+      expect(response.status).toBe(401);
+      expect(response.body.message).toBe('Credenciales inválidas');
+    });
+
+    // Test 8: Login exitoso con usuario existente
     it('should login successfully with existing test user credentials', async () => {
       const response = await request(BASE_URL)
         .post('/api/auth/login')
@@ -88,30 +115,5 @@ describe('Auth Login API - Integration Test', () => {
       }
     });
 
-    // Test 7: Caso con espacios en blanco 
-    it('should handle empty strings in credentials', async () => {
-      const response = await request(BASE_URL)
-        .post('/api/auth/login')
-        .send({
-          usuario: '   ',
-          contraseña: '   '
-        });
-
-      expect(response.status).toBe(401);
-      expect(response.body.message).toBe('Credenciales inválidas');
-    });
-
-    // Test 8: Contraseña incorrecta para usuario existente
-    it('should return 401 for correct usuario but wrong contraseña', async () => {
-      const response = await request(BASE_URL)
-        .post('/api/auth/login')
-        .send({
-          usuario: 'usuariodeprueba@gmail.com',
-          contraseña: 'contraseña_incorrecta'
-        });
-
-      expect(response.status).toBe(401);
-      expect(response.body.message).toBe('Credenciales inválidas');
-    });
   });
 });

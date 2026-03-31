@@ -1,9 +1,9 @@
 import { Router } from "express";
-import { authMiddleware, roleAuthMiddleware } from "../auth/auth.middleware.js";
-import { createPreference, verifySucces, verifyFailure } from "./mercadopago.controller.js";
+import { authMiddleware } from "../auth/auth.middleware.js";
+import { createPreference, verifySuccess, verifyFailure } from "./mercadopago.controller.js";
 
 export const mercadoPagoRouter = Router();
 
 mercadoPagoRouter.post("/create-preference", authMiddleware, createPreference);
-mercadoPagoRouter.get('/success', verifySucces);
+mercadoPagoRouter.get('/success', verifySuccess);
 mercadoPagoRouter.get('/failure', verifyFailure);

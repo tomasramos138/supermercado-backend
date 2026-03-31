@@ -41,7 +41,7 @@ export const createPreference = async (req: Request, res: Response) => {
         }
       }
 
-      // Crear venta
+      // Crear venta con el total en 0 y estado pendiente
       const venta = em.create(Venta, {
         fecha: new Date(),
         total: 0,
@@ -82,7 +82,7 @@ export const createPreference = async (req: Request, res: Response) => {
     // Crear items para MercadoPago (con costo de entrega)
     const mpItems = [];
 
-    // Agregar productos
+    // Agregar productos, transforma cada item al formato requerido por MercadoPago
     for (const item of items) {
       const producto = await em.findOne(Producto, { id: item.id });
       mpItems.push({
@@ -97,7 +97,7 @@ export const createPreference = async (req: Request, res: Response) => {
     // Agregar costo de entrega
     if (costoEntrega > 0) {
       mpItems.push({
-        id: "entrega_distribuidor", // Agregar id para el costo de entrega
+        id: "entrega_distribuidor",
         title: "Costo de entrega",
         quantity: 1,
         unit_price: Number(costoEntrega),
@@ -113,7 +113,6 @@ export const createPreference = async (req: Request, res: Response) => {
         back_urls: {
           success: `${process.env.BACK_URL}/api/mercadopago/success`,
           failure: `${process.env.BACK_URL}/api/mercadopago/failure`,
-          pending: `${process.env.BACK_URL}/api/mercadopago/pending`,
         },
         external_reference: ventaId.toString(),
         auto_return: "approved",
@@ -135,7 +134,6 @@ export const createPreference = async (req: Request, res: Response) => {
     });
   }
 };
-
 
 export const verifyFailure = async (req: Request, res: Response) => {
   const em = orm.em.fork();
@@ -175,15 +173,17 @@ export const verifyFailure = async (req: Request, res: Response) => {
   return res.redirect(`${frontendUrl}/payment/failure`);
 };
 
-export const verifySucces = async (req: Request, res: Response) => {
+export const verifySuccess = async (req: Request, res: Response) => {
   const em = orm.em.fork();
-  const { payment_id, external_reference } = req.query;
+  const { payment_id, external_reference } = req.query; //MP envía el id del pago y ventaId
   const frontendUrl = process.env.FRONT_URL as string;
 
+  //Si no hay id de pago lo trata como un pago fallido
   if (!payment_id) {
     return await verifyFailure(req, res);
   }
 
+  //Vuelve a consultar el estado del pago a MercadoPago con el payment_id
   const payment = new Payment(client);
   const paymentInfo = await payment.get({
     id: payment_id as string,
